@@ -11,11 +11,10 @@ on:
 
 jobs:
   test:
-    runs-on: ${{ matrix.os }} # ubuntu-latest
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-latest]
         # Run in all these versions of Python
         python-version: [3.8, 3.9, '3.10']
 
