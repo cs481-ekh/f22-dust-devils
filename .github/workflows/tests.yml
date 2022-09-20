@@ -5,18 +5,20 @@ on:
   push:
     branches:
       - "main"
+      - "37_mac_os_workflow"
 
   pull_request:
     branches:
-      - "main
+      - "main"
+      - "37_mac_os_workflow"
+
 
 jobs:
   test:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest]
         # Run in all these versions of Python
         python-version: [3.8, 3.9, '3.10']
 
