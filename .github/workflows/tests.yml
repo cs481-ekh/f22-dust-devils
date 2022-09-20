@@ -5,10 +5,12 @@ on:
   push:
     branches:
       - "main"
+      - "37_mac_os_workflow"
 
   pull_request:
     branches:
-      - "main"
+      - "main
+      - "37_mac_os_workflow"
 
 
 jobs:
