@@ -1,3 +1,4 @@
 #!/bin/bash
-pytest tests/test*
+pip install -r requirements.txt
+pytest
 exit 127
