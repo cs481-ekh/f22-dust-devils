@@ -1,3 +1,3 @@
 #!/bin/bash
-pytest tests/test*
+pytest tests/
 # exit 127
