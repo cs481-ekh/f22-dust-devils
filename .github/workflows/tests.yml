@@ -5,11 +5,13 @@ on:
   push:
     branches:
       - "main"
+      - "38_test_muldoon_with_windows_os"
 
 
   pull_request:
     branches:
       - "main"
+      - "38_test_muldoon_with_windows_os"
 
 
 jobs:
