@@ -28,7 +28,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
         # Run in all these versions of Python
         python-version: ['3.10']
 
@@ -54,5 +54,5 @@ jobs:
           pip install pytest
         # Run the tests. I'm using pytest and the file is in the tests directory.
       - name: Run tests
-#         run: pytest tests/test*
+        # run: pytest tests/test*
         run: build.sh
