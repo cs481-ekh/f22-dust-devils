@@ -4,13 +4,11 @@ on:
   push:
     branches:
       - "main"
-      - "40-set-up-buildsh"
 
 
   pull_request:
     branches:
       - "main"
-      - "40-set-up-buildsh"
       
 jobs:
   build:
