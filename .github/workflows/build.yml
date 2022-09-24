@@ -4,13 +4,11 @@ on:
   push:
     branches:
       - "main"
-      - "46-add-pds4-install-to-buildsh"
 
 
   pull_request:
     branches:
       - "main"
-      - "46-add-pds4-install-to-buildsh"
       
 jobs:
   build:
