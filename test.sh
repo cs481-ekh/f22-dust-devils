@@ -1,2 +1,3 @@
 #!/bin/bash
-exit 127
+pytest tests/test*
+# exit 127
