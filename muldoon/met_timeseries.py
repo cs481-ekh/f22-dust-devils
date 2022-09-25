@@ -8,6 +8,7 @@ from statsmodels.robust import mad
 
 import muldoon.utils as utils
 from emcee import *
+import psd
 
 __all__ = ['MetTimeseries']
 

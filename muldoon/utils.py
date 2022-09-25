@@ -5,6 +5,7 @@ Utility functions for muldoon
 import numpy as np
 from scipy.optimize import curve_fit
 from scipy.stats import mode
+import psd
 
 def modified_lorentzian(t, baseline, slope, t0, Delta, Gamma):
     """

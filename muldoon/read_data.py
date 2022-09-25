@@ -4,6 +4,7 @@ A collections of routines to read in data from various missions
 
 import numpy as np
 import pandas as pd
+import psd
 
 def read_Perseverance_PS_data(filename, sol=None, time_field='LTST'):
     """
