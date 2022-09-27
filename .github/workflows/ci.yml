@@ -1,17 +1,15 @@
 
-name: Run tests
+name: Build/Test Check
 
 on:
   push:
     branches:
       - "main"
-      - "38_test_muldoon_with_windows_os"
 
 
   pull_request:
     branches:
       - "main"
-      - "38_test_muldoon_with_windows_os"
 
 
 jobs:
@@ -30,10 +28,10 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest]
         
         # Run in all these versions of Python
-        python-version: [3.9, '3.10']
+        python-version: ['3.10']
 
     steps:
         # Checkout the latest code from the repo
@@ -47,9 +45,11 @@ jobs:
         # Display the Python version being used
       - name: Display Python version
         run: python -c "import sys; print(sys.version)"
-        # Install the package using the setup.py
-      - name: Install package
-        run: python setup.py install
+      - name: Set up permissions
+        run: chmod +x build.sh
+        # Run build.sh to set up package
+      - name: Install dependencies
+        run: ./build.sh
         # Install pytest (you can use some other testing utility)
       - name: Install pytest
         run: |
