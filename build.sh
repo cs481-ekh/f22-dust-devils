@@ -1,3 +1,2 @@
 #!/bin/bash
-pytest tests/test*
-exit 127
+python setup.py install
