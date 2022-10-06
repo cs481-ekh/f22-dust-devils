@@ -256,7 +256,7 @@ def vortex_wind(V_act, v_diameter, r):
     """
     return V_act*((2*(r/(v_diameter/2)))/(1+(r/math.pow((v_diameter/2),2))))
 
-def wind_vortex_profile(max_wind_speed, ambient_speed_before, ambient_speed_after, b, time, t0, gamma):
+def wind_vortex_profile(max_wind_speed, ambient_speed_before, b, time, t0, gamma):
     """
     Calculates the vortex wind profile
 
@@ -274,8 +274,10 @@ def wind_vortex_profile(max_wind_speed, ambient_speed_before, ambient_speed_afte
 
     """
     ret_t = time - t0
+    one = 1.
+    square_by = 2.
 
-    return max_wind_speed(math.sqrt(1 + math.pow((ambient_speed_before/b), 2) * math.pow(ret_t, 2)) / (1 + math.pow(ret_t/(gamma/2), 2)))
+    return int(max_wind_speed*(math.sqrt(one + math.pow((ambient_speed_before/b), square_by) * math.pow(ret_t, square_by)) / (one + math.pow(ret_t/(gamma/square_by), square_by))))
 
 def find_cosine(b, ambient_speed_before, time, t0):
     """
