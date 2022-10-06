@@ -3,6 +3,7 @@ Utility functions for muldoon
 """
 
 import numpy as np
+import math
 from scipy.optimize import curve_fit
 from scipy.stats import mode
 
@@ -239,3 +240,39 @@ def plot_vortex(time, t0, data, model_func, popt, ax, yerr=None):
     ax.plot((time - t0)*3600., model, lw=3, color=BoiseState_orange, zorder=-1)
 
     return model
+
+def vortex_wind(V_act, v_diameter, r):
+    """
+    Calculates the vortex wind as a part of the wind speed signal
+
+    Args:
+        V_act (float): the tangential wind speed at the vortex diameter
+        v_diameter (float): D_act vortex diameter
+        r (float): radial distance of sensor from the vortex center
+    
+    Returns:
+        vortex wind (float array): V(r)
+
+    """
+    return float(V_act*((2*(r/(v_diameter/2)))/(1+(math.pow((r/(v_diameter/2)),2)))))
+
+def wind_vortex_profile(max_wind_speed, ambient_speed_before, b, time, t0, gamma):
+    """
+    Calculates the vortex wind profile
+
+    Args:
+        max_wind_speed (float): V_obs maximum wind speed encountered
+        ambient_speed_before (float): U_1 ambient wind speed before the encounter
+        ambient_speed_after (float): U_2 ambient wind speed after the encounter
+        b (float): closest approach distance
+        time/data (float arrays): time-series to plot and model fit
+        t0 (float): the central time of the vortex signal
+        gamma (float): full-width/half-max duration of excursion 
+    
+    Returns:
+        vortex wind profile (float array): V(t)
+
+    """
+    ret_t = time - t0
+
+    return float(max_wind_speed * (math.sqrt(1 + math.pow((ambient_speed_before/b), 2) * math.pow(ret_t, 2)) / (1 + math.pow(ret_t/(gamma/2), 2))))
