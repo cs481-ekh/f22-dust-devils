@@ -1,29 +1,28 @@
 import pytest
+import logging
 import numpy as np
 from numpy.random import normal
 from muldoon import met_timeseries as met
 from muldoon import utils as util
 from muldoon.read_data import *
 
-#TODO: Needs missing values for this test to work
 def test_vortex_wind():
     """
     Tests the vortex wind function
     """
-    time = np.linspace(-1, 1, 1000)
-    v_act = None
-    r = None
-    D_act = None
-    expected = None
+    v_act = 25
+    r = .75
+    D_act = 0.01
+    expected = 0.3333185
 
-    v_r = util.vortex_wind(v_act, D_act, r)
+    # rounded to 7 digits after the decimal
+    v_r = round(util.vortex_wind(v_act, D_act, r), 7)
 
     if (v_r == expected):
         assert True
-    else:
+    if (v_r != expected):
         assert False
 
-#TODO: Needs missing values for this test to work
 def test_wind_profile():
     """
     Tests the vortex wind profile function
@@ -36,10 +35,13 @@ def test_wind_profile():
     Gamma = 0.01 
     expected = 0.0000910710
 
-    v_t = int(util.wind_vortex_profile(max_wind_speed, u_1, slope, time, t0,Gamma))
+    # rounded to 9 digits after the decimal
+    v_t = round(util.wind_vortex_profile(max_wind_speed, u_1, slope, time, t0, Gamma), 9)
 
     if(v_t == expected):
         assert True 
+    if(v_t != expected):
+        assert False
 
 if __name__ == '__main__':
     pytest.main()
