@@ -6,7 +6,7 @@ from pds4_tools import pds4_read
 import matplotlib.pyplot as plt
 import ssl
 
-def readInputRemote(filename:str):
+def readInputFile(filename:str):
     ssl._create_default_https_context = ssl._create_unverified_contextx
     data = pds4_read(filename)
     return data.info()
