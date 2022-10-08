@@ -8,6 +8,7 @@ from pds4_tools import pds4_read
 import matplotlib.pyplot as plt
 import ssl
 
+
 def read_Perseverance_PS_data(filename, sol=None, time_field='LTST'):
     """
     Read in Perseverance MEDA PS data - https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/
@@ -117,7 +118,3 @@ def which_sol(filename):
 
     return int(filename[ind+4:ind+8])
 
-def readInputRemote(filename:str):
-    ssl._create_default_https_context = ssl._create_unverified_contextx
-    data = pds4_read(filename)
-    return data.info()
