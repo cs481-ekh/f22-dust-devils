@@ -1,9 +1,13 @@
 """
 A collections of routines to read in data from various missions
 """
-
 import numpy as np
 import pandas as pd
+from urllib.request import urlretrieve
+from pds4_tools import pds4_read
+import matplotlib.pyplot as plt
+import ssl
+
 
 def read_Perseverance_PS_data(filename, sol=None, time_field='LTST'):
     """
@@ -113,3 +117,4 @@ def which_sol(filename):
     ind = filename.find("WE__")
 
     return int(filename[ind+4:ind+8])
+
