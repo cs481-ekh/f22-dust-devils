@@ -16,7 +16,6 @@ def readInputFile(filename:str):
         Data information contained in PDS4 label
     """
     if(platform.system() == 'Windows'):
-        print(platform.system())
         ssl._create_default_https_context = ssl._create_unverified_contextx
     data = pds4_read(filename)
     return data.info()
