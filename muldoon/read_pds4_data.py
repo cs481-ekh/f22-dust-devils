@@ -7,6 +7,5 @@ import matplotlib.pyplot as plt
 import ssl
 
 def readInputFile(filename:str):
-    ssl._create_default_https_context = ssl._create_unverified_contextx
     data = pds4_read(filename)
     return data.info()
