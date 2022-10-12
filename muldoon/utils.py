@@ -1,7 +1,7 @@
 """
 Utility functions for muldoon
 """
-
+import numpy
 import numpy as np
 import math
 from scipy.optimize import curve_fit
