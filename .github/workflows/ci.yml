@@ -56,7 +56,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest
       - name: dependencies for windows setup
-        run: bash dependencies.sh
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy
+          pip install matplotlib
+          pip install scipy
         # Run the tests. I'm using pytest and the file is in the tests directory.
       - name: Run tests
         run: bash test.sh
