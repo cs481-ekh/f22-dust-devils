@@ -151,6 +151,7 @@ setup(
     # syntax, for example:
     #
     #   $ pip install sampleproject[dev]
+    pip install numpy
     #
     # Similar to `install_requires` above, these must be valid existing
     # projects.
