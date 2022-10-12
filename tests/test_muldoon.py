@@ -1,7 +1,7 @@
 """
 Test the functionality of Muldoon
 """
-
+import numpy
 import numpy as np
 from numpy.random import normal
 from muldoon import met_timeseries as met
