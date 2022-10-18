@@ -8,7 +8,7 @@ from urllib.request import urlretrieve
 from pds4_tools import pds4_read
 import matplotlib.pyplot as plt
 
-def file_verification(filename:str):
+def read_data(filename:str):
     """
     Verifies the existence of provide file
 
@@ -20,26 +20,25 @@ def file_verification(filename:str):
     """
     file_status = 0
     data = " "
-    error_message = "\nFilenotfounderror: There is no file " + filename + " in the working directory. Please check file name or path\n"
+    error_message = "\n===>Filenotfounderror: There is no file " + filename + " in the working directory. Please check file name or path\n"
     if filename.endswith('.xml'):
         try:
-            file_status = 1
             data = pds4_read(filename)
             data.info()
+            file_status = 1
         except Exception as e:
             print(error_message)
             file_status = 0
-
     else:
         print("Processing file: " + filename)
         try:
-            file_status = 1
             data = pd.read_csv(filename)
+            file_status = 1
         except Exception as e:
             print(error_message)
             file_status = 0
 
-    return file_status, data
+    return data, file_status
     
 
 def read_Perseverance_PS_data(filename, sol=None, time_field='LTST'):
@@ -53,7 +52,7 @@ def read_Perseverance_PS_data(filename, sol=None, time_field='LTST'):
         time, pressure (float array): times and pressures, times in seconds
         since midnight of sol associated with filename
     """
-
+    time_field = time_field.upper()
     time = make_seconds_since_midnight(filename, time_field=time_field)
     pressure = pd.read_csv(filename)['PRESSURE'].values
 
@@ -75,7 +74,7 @@ def read_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST',
         since midnight of sol associated with filename
 
     """
-
+    time_field=time_field.upper()
     # Note: ATS measures at 2 Hz, so there will be some duplicate LTST-values!
     time = make_seconds_since_midnight(filename, time_field=time_field)
 
@@ -111,30 +110,75 @@ def make_seconds_since_midnight(filename, time_field='LTST', sol=None):
 
     if(sol is None):
         primary_sol = which_sol(filename)
-    data = pd.read_csv(filename)
+
+    data, _ = read_data(filename)
+    time_field = time_field.upper()
+
+    sols_str = [] #Sol is a solar day on Mars
+    times_str = []
+    delta_sols = []
 
     # Grab the sols and times associated with each row
     if(time_field == "LTST"):
-        sols_str = data[time_field].str.split(expand=True)[0].values
-        times_str = data[time_field].str.split(expand=True)[1].values
-        # Turn the times strings into seconds since midnight of the primary sol
-        delta_sols = sols_str.astype(float) - float(primary_sol)
+        if(filename.endswith('.xml')):
+            time_field_col = data['TABLE'][time_field]
+            ltst_values = np.array(time_field_col)
+            np.array(map(str, ltst_values))
+            ltst_split = np.char.split(ltst_values,sep=' ') #splits fromchar 0 to space " "
 
-        # And then in a very cludgey way, convert times to seconds since primary sol's midnight
+            for x in range(len(ltst_values)):
+                sols_str.append(float(ltst_split[x][0]))
+                times_str.append(ltst_split[x][1])
+            
+            for x in range(len(ltst_values)):
+                delta_sols.append(sols_str[x] - float(primary_sol))
+        elif(filename.endswith('.csv')):
+            sols_str = data[time_field].str.split(expand=True)[0].values #splits from char 0 to space " "
+            times_str = data[time_field].str.split(expand=True)[1].values
+            delta_sols = sols_str.astype(float) - float(primary_sol)
+
+    elif(time_field == "LMST"):
+        if(filename.endswith('.xml')):
+            time_field_col = data['TABLE'][time_field]
+            lmst_values = np.array(time_field_col)
+            lmst_split = np.char.split(lmst_values,sep='M') #splits fromchar 0 to space " "
+            
+            for x in range(len(lmst_values)):
+                times_str.append(lmst_split[x][1])
+        elif(filename.endswith('.csv')):
+            times_str = data[time_field].str.split("M", expand=True)[1].values
+
+    time = time_conversion_to_seconds(times_str, delta_sols, time_field)
+
+    return time
+
+def time_conversion_to_seconds(times_str, delta_sols,time_field):
+    """
+    Time coversion for easy usability
+
+    Args:
+        times_str: time string for file
+        time_field (str, optional): name of time field to analyze
+        delta_sol (int, optional): difference between primary sol and sol from file
+    Returns:
+        converted time
+    """
+    time_field = time_field.upper()
+    if(time_field=='LTST'):
         time = np.array([float(times_str[i].split(":")[0]) +\
                 delta_sols[i]*24. + float(times_str[i].split(":")[1])/60 +\
                 float(times_str[i].split(":")[2])/3600. for i in
                 range(len(times_str))])
-
-    elif(time_field == "LMST"):
-        times_str = data[time_field].str.split("M", expand=True)[1].values
-
+    elif(time_field=='LMST'):
         time = np.array([float(times_str[i].split(":")[0]) +\
                 float(times_str[i].split(":")[1])/60 +\
                 float(times_str[i].split(":")[2])/3600. for i in
                 range(len(times_str))])
+    else:
+        raise Exception(time_field + " time field is not a valid option")
 
     return time
+
 
 def which_sol(filename):
     """
