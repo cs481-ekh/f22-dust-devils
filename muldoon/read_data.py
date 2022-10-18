@@ -19,24 +19,27 @@ def file_verification(filename:str):
         file_status: 1 if file exists, else expception is thrown
     """
     file_status = 0
+    data = " "
     error_message = "\nFilenotfounderror: There is no file " + filename + " in the working directory. Please check file name or path\n"
     if filename.endswith('.xml'):
         try:
+            file_status = 1
             data = pds4_read(filename)
             data.info()
-            file_status = 1
         except Exception as e:
             print(error_message)
+            file_status = 0
 
     else:
         print("Processing file: " + filename)
         try:
-            data = pd.read_csv(filename)
             file_status = 1
+            data = pd.read_csv(filename)
         except Exception as e:
             print(error_message)
+            file_status = 0
 
-    return file_status
+    return file_status, data
     
 
 def read_Perseverance_PS_data(filename, sol=None, time_field='LTST'):
