@@ -94,6 +94,31 @@ def read_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST',
         ATS5 = pd.read_csv(filename)["ATS_LOCAL_TEMP5"].values
 
         return time, [ATS1, ATS2, ATS3, ATS4, ATS5]
+    
+def read_Perseverance_WS_data(filename, sol=None, time_field='LTST'):
+    """
+    Read in WS data - (link)
+
+    Args:
+        filename (str): path to CSV file
+
+    Returns:
+        time, ws1-8 (float array): times and dimensions of wind speed, times in seconds
+        since midnight of sol associated with filename
+    """
+
+    time = make_seconds_since_midnight(filename, time_field=time_field)
+
+    ws1 = pd.read_csv(filename)['HORIZONTAL_WIND_SPEED'].values
+    ws2 = pd.read_csv(filename)['HORIZONTAL_WIND_SPEED_UNCERTAINTY'].values
+    ws3 = pd.read_csv(filename)['VERTICAL_WIND_SPEED'].values
+    ws4 = pd.read_csv(filename)['VERTICAL_WIND_SPEED_UNCERTAINTY'].values
+    ws5 = pd.read_csv(filename)['WIND_DIRECTION'].values
+    ws6 = pd.read_csv(filename)['WIND_DIRECTION_UNCERTAINTY'].values
+    ws7 = pd.read_csv(filename)['BOTH_BOOMS_USED_FOR_RETRIEVAL'].values
+    ws8 = pd.read_csv(filename)['ROVER_STILL'].values
+
+    return time, ws1, ws2, ws3, ws4, ws5, ws6, ws7, ws8
 
 def make_seconds_since_midnight(filename, time_field='LTST', sol=None):
     """
