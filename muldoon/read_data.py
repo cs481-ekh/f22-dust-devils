@@ -1,13 +1,43 @@
 """
 A collections of routines to read in data from various missions
 """
+from urllib.error import URLError
 import numpy as np
 import pandas as pd
 from urllib.request import urlretrieve
 from pds4_tools import pds4_read
 import matplotlib.pyplot as plt
-import ssl
 
+def file_verification(filename:str):
+    """
+    Verifies the existence of provide file
+
+    Args:
+        filename (str): path to CSV file/path to PDS4 file or link
+        
+    Returns:
+        file_status: 1 if file exists, else expception is thrown
+    """
+    file_status = 0
+    error_message = "\nFilenotfounderror: There is no file " + filename + " in the working directory. Please check file name or path\n"
+    if filename.endswith('.xml'):
+        try:
+            data = pds4_read(filename)
+            data.info()
+            file_status = 1
+        except Exception as e:
+            print(error_message)
+
+    else:
+        print("Processing file: " + filename)
+        try:
+            data = pd.read_csv(filename)
+            file_status = 1
+        except Exception as e:
+            print(error_message)
+
+    return file_status
+    
 
 def read_Perseverance_PS_data(filename, sol=None, time_field='LTST'):
     """
@@ -117,4 +147,3 @@ def which_sol(filename):
     ind = filename.find("WE__")
 
     return int(filename[ind+4:ind+8])
-
