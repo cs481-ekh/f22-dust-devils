@@ -61,3 +61,15 @@ def test_make_seconds_since_midnight_lmst():
     result = make_seconds_since_midnight(filename,'lmst', None)
     expected = [16.09203194]
     assert(round(result[0], 8) == expected[0])
+
+def test_read_Perseverance_PS_data_csv():
+    filename = './tests/WE__0001___________DER_PS__________________P02.csv'
+    _,result = read_Perseverance_PS_data(filename, None, 'LTST')
+    expected = [715.96]
+    assert(round(result[0], 2) == expected[0])
+
+def test_read_Perseverance_PS_data_pds4():
+    filename = 'https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0000_0089/sol_0001/WE__0001___________DER_PS__________________P02.xml'
+    _,result = read_Perseverance_PS_data(filename, None, 'LTST')
+    expected = [715.96]
+    assert(round(result[0], 2) == expected[0])
