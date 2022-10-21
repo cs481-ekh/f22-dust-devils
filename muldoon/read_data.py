@@ -54,7 +54,13 @@ def read_Perseverance_PS_data(filename, sol=None, time_field='LTST'):
     """
     time_field = time_field.upper()
     time = make_seconds_since_midnight(filename, time_field=time_field)
-    pressure = pd.read_csv(filename)['PRESSURE'].values
+    data, dummy = read_data(filename)
+    pressure = []
+
+    if filename.endswith('.xml'):
+        pressure = data['TABLE']['PRESSURE']
+    elif filename.endswith('.csv'):
+        pressure = data['PRESSURE'].values
 
     return time, pressure
 
