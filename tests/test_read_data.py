@@ -1,3 +1,4 @@
+from math import isnan
 from unittest import result
 import numpy as np
 from numpy.random import normal
@@ -7,28 +8,27 @@ from muldoon.read_data import *
 from pds4_tools import pds4_read
 import pandas as pd
 
-from muldoon.read_data import read_data
-
-from muldoon.read_data import time_conversion_to_seconds
+pressure_pds4_file = 'https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0000_0089/sol_0001/WE__0001___________DER_PS__________________P02.xml'
+pressure_csv_file = './tests/WE__0001___________DER_PS__________________P02.csv'
+wind_pds4_file = 'https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0180_0299/sol_0190/WE__0190___________DER_WS__________________P02.xml'
+wind_csv_file = './tests/WE__0190___________DER_WS__________________P02.csv'
 
 def test_file_verification_pds4_file_exist():
-    filename = 'https://pdssbn.astro.umd.edu/holdings/pds4-gbo-kpno:hyakutake_spectra-v1.0/data/offset_0_arcsec.xml'
-    _, file_status =  read_data(filename)
+    _, file_status =  read_data(pressure_pds4_file) 
     assert(file_status == 1)
 
 def test_file_verification_pds4_file_does_not_exist():
-    filename = 'https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_calibrated_env/sol_0000_0089/sol_0001/WE__0001___________CAL_ATS_________________P1.xml'
+    filename = 'https://wrong_link.xml'
     _, file_status =  read_data(filename)
     # wrong link
     assert(file_status == 0)
 
 def test_file_verification_csv_file_exist():
-    filename = './tests/WE__0001___________DER_PS__________________P02.csv'
-    _, file_status =  read_data(filename)
+    _, file_status =  read_data(pressure_csv_file)
     assert(file_status == 1)
 
 def test_file_verification_csv_file_does_not_exist():
-    filename = './tests/WE__0001___________DER_PS__________________P0.csv'
+    filename = './tests/wrong_file.csv'
     _, file_status =  read_data(filename)
     # wrong csv file
     assert(file_status == 0)
@@ -50,26 +50,101 @@ def test_time_conversion_to_seconds_lmst():
     assert(round(result[0], 8) == expected[0])
 
 def test_make_seconds_since_midnight_ltst():
-    filename = 'https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0000_0089/sol_0001/WE__0001___________DER_PS__________________P02.xml'
-    result = make_seconds_since_midnight(filename,'ltst', None)
+    result,_ = make_seconds_since_midnight(pressure_pds4_file,'ltst', None)
     expected = [15.46694444]
     assert(round(result[0], 8) == expected[0])
 
 
 def test_make_seconds_since_midnight_lmst():
-    filename = 'https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0000_0089/sol_0001/WE__0001___________DER_PS__________________P02.xml'
-    result = make_seconds_since_midnight(filename,'lmst', None)
+    result,_ = make_seconds_since_midnight(pressure_csv_file,'lmst', None)
     expected = [16.09203194]
     assert(round(result[0], 8) == expected[0])
 
 def test_read_Perseverance_PS_data_csv():
-    filename = './tests/WE__0001___________DER_PS__________________P02.csv'
-    _,result = read_Perseverance_PS_data(filename, None, 'LTST')
+    _,result = read_Perseverance_PS_data(pressure_csv_file, None, 'LTST')
     expected = [715.96]
     assert(round(result[0], 2) == expected[0])
 
 def test_read_Perseverance_PS_data_pds4():
-    filename = 'https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0000_0089/sol_0001/WE__0001___________DER_PS__________________P02.xml'
-    _,result = read_Perseverance_PS_data(filename, None, 'LTST')
+    _,result = read_Perseverance_PS_data(pressure_pds4_file, None, 'LTST')
     expected = [715.96]
     assert(round(result[0], 2) == expected[0])
+
+
+def test_read_Perseverance_WS_data_pds4_hws():
+    _,result = read_Perseverance_WS_data(wind_pds4_file, sol=None, time_field='LTST', wind_field='HORIZONTAL_WIND_SPEED')
+    expected = [1.63]
+    assert(round(result[0], 2) == expected[0])
+
+def test_read_Perseverance_WS_data_csv_hws():
+    _,result = read_Perseverance_WS_data(wind_csv_file, sol=None, time_field='LTST', wind_field='HORIZONTAL_WIND_SPEED')
+    expected = [1.63]
+    assert(round(result[0], 2) == expected[0])
+
+def test_read_Perseverance_WS_data_pds4_hwsu():
+    _,result = read_Perseverance_WS_data(wind_pds4_file, sol=None, time_field='LTST', wind_field='HORIZONTAL_WIND_SPEED_UNCERTAINTY')
+    expected = [0.0]
+    assert(round(result[0], 2) == expected[0])
+
+def test_read_Perseverance_WS_data_csv_hwsu():
+    _,result = read_Perseverance_WS_data(wind_csv_file, sol=None, time_field='LTST', wind_field='HORIZONTAL_WIND_SPEED_UNCERTAINTY')
+    assert(isnan(result[0]))
+
+def test_read_Perseverance_WS_data_pds4_vws():
+    _,result = read_Perseverance_WS_data(wind_pds4_file, sol=None, time_field='lmst', wind_field='vws')
+    expected = [0.0]
+    print(result)
+    assert(result[0] == expected[0])
+
+def test_read_Perseverance_WS_data_csv_vws():
+    _,result = read_Perseverance_WS_data(wind_csv_file, sol=None, time_field='lmst', wind_field='vws')
+    assert(isnan(result[0]))
+
+def test_read_Perseverance_WS_data_pds4_vwsu():
+    _,result = read_Perseverance_WS_data(wind_pds4_file, sol=None, time_field='lmst', wind_field='vwsu')
+    expected = [0.0]
+    print(result)
+    assert(result[0] == expected[0])
+
+def test_read_Perseverance_WS_data_csv_vwsu():
+    _,result = read_Perseverance_WS_data(wind_csv_file, sol=None, time_field='lmst', wind_field='vwsu')
+    assert(isnan(result[0]))
+
+def test_read_Perseverance_WS_data_pds4_wd():
+    _,result = read_Perseverance_WS_data(wind_pds4_file, sol=None, time_field='lmst', wind_field='wd')
+    expected = [269.33]
+    print(result)
+    assert(result[0] == expected[0])
+
+def test_read_Perseverance_WS_data_csv_wd():
+    _,result = read_Perseverance_WS_data(wind_csv_file, sol=None, time_field='lmst', wind_field='wd')
+    expected = [269.33]
+    assert(result[0] == expected[0])
+    
+def test_read_Perseverance_WS_data_pds4_wdu():
+    _,result = read_Perseverance_WS_data(wind_pds4_file, sol=None, time_field='lmst', wind_field='wdu')
+    expected = [0.0]
+    assert(result[0] == expected[0])
+
+def test_read_Perseverance_WS_data_csv_wdu():
+    _,result = read_Perseverance_WS_data(wind_csv_file, sol=None, time_field='lmst', wind_field='wdu')
+    assert(isnan(result[0]))
+
+def test_read_Perseverance_WS_data_pds4_bbufr():
+    _,result = read_Perseverance_WS_data(wind_pds4_file, sol=None, time_field='lmst', wind_field='bbufr')
+    expected = [0.0]
+    assert(result[0] == expected[0])
+
+def test_read_Perseverance_WS_data_csv_bbufr():
+    _,result = read_Perseverance_WS_data(wind_csv_file, sol=None, time_field='lmst', wind_field='bbufr')
+    assert(isnan(result[0]))
+
+def test_read_Perseverance_WS_data_pds4_rs():
+    _,result = read_Perseverance_WS_data(wind_pds4_file, sol=None, time_field='lmst', wind_field='rs')
+    expected = [1]
+    assert(result[0] == expected[0])
+
+def test_read_Perseverance_WS_data_csv_rs():
+    _,result = read_Perseverance_WS_data(wind_csv_file, sol=None, time_field='lmst', wind_field='rs')
+    expected = [1]
+    assert(result[0] == expected[0])
