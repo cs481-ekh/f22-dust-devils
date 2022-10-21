@@ -13,9 +13,10 @@ def read_data(filename:str):
     Verifies the existence of provide file
 
     Args:
-        filename (str): path to CSV file/path to PDS4 file or link
+        filename (str): path to CSV file/PDS4 file
         
     Returns:
+        data: processed data from provided file
         file_status: 1 if file exists, else expception is thrown
     """
     file_status = 0
@@ -46,7 +47,7 @@ def read_Perseverance_PS_data(filename, sol=None, time_field='LTST'):
     Read in Perseverance MEDA PS data - https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/
 
     Args:
-        filename (str): path to CSV file
+        filename (str): path to CSV file/PDS4 file
 
     Returns:
         time, pressure (float array): times and pressures, times in seconds
@@ -70,7 +71,7 @@ def read_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST',
     Read in Perseverance MEDA ATS data - https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/
 
     Args:
-        filename (str): path to CSV file
+        filename (str): path to CSV file/PDS4 file
         which_ATS (int or str): which of the five ATS sensors to read in;
         if "all", all of the ATS time series are returned
         time_field (str, optional): which time base to use
@@ -105,7 +106,7 @@ def read_Perseverance_WS_data(filename, sol=None, time_field='LTST', wind_field=
     Read in WS data - (link)
 
     Args:
-        filename (str): path to CSV file
+        filename (str): path to CSV file/PDS4 file
 
     Returns:
         time, ws1-8 (float array): times and dimensions of wind speed, times in seconds
@@ -129,7 +130,7 @@ def make_seconds_since_midnight(filename, time_field='LTST', sol=None):
     The MEDA data provide times in the LTST field in the format "sol hour:minute:second".
 
     Args:
-        filename (str): name of the file
+        filename (str): path to CSV file/PDS4 file
         time_field (str, optional): name of time field to analyze
         sol (int, optional): which is the primary sol; if not given, will
         determine from filename
@@ -212,7 +213,7 @@ def which_sol(filename):
     Based on the filename, returns the sol corresponding to a data file
 
     Args:
-        filename (str): name of the file
+        filename (str): path to CSV file/PDS4 file
 
     Returns:
         sol (int) associated with that file
