@@ -13,9 +13,10 @@ def read_data(filename:str):
     Verifies the existence of provide file
 
     Args:
-        filename (str): path to CSV file/path to PDS4 file or link
+        filename (str): path to CSV file/PDS4 file
         
     Returns:
+        data: processed data from provided file
         file_status: 1 if file exists, else expception is thrown
     """
     file_status = 0
@@ -37,7 +38,7 @@ def read_data(filename:str):
         except Exception as e:
             print(error_message)
             file_status = 0
-
+    print('========================================================')
     return data, file_status
     
 
@@ -46,13 +47,13 @@ def read_Perseverance_PS_data(filename, sol=None, time_field='LTST'):
     Read in Perseverance MEDA PS data - https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/
 
     Args:
-        filename (str): path to CSV file
+        filename (str): path to CSV file/PDS4 file
 
     Returns:
         time, pressure (float array): times and pressures, times in seconds
         since midnight of sol associated with filename
     """
-    time_field = time_field.upper()
+    time_field = check_time_field(time_field)
     time = make_seconds_since_midnight(filename, time_field=time_field)
     data, dummy = read_data(filename)
     pressure = []
@@ -70,7 +71,7 @@ def read_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST',
     Read in Perseverance MEDA ATS data - https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/
 
     Args:
-        filename (str): path to CSV file
+        filename (str): path to CSV file/PDS4 file
         which_ATS (int or str): which of the five ATS sensors to read in;
         if "all", all of the ATS time series are returned
         time_field (str, optional): which time base to use
@@ -100,50 +101,50 @@ def read_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST',
 
         return time, [ATS1, ATS2, ATS3, ATS4, ATS5]
     
-def read_Perseverance_WS_data(filename, sol=None, time_field='LTST'):
+def read_Perseverance_WS_data(filename, sol=None, time_field='LTST', wind_field='HORIZONTAL_WIND_SPEED'):
     """
     Read in WS data - (link)
 
     Args:
-        filename (str): path to CSV file
+        filename (str): path to CSV file/PDS4 file
 
     Returns:
         time, ws1-8 (float array): times and dimensions of wind speed, times in seconds
         since midnight of sol associated with filename
     """
+    wind_field = check_wind_field(wind_field)
+    time_field = check_time_field(time_field)
+    time, data= make_seconds_since_midnight(filename, time_field=time_field)
 
-    time = make_seconds_since_midnight(filename, time_field=time_field)
+    if(filename.endswith('.xml')):
+        wind_data_col = data['TABLE'][wind_field]
+        wind_data = np.array(wind_data_col)
 
-    ws1 = pd.read_csv(filename)['HORIZONTAL_WIND_SPEED'].values
-    ws2 = pd.read_csv(filename)['HORIZONTAL_WIND_SPEED_UNCERTAINTY'].values
-    ws3 = pd.read_csv(filename)['VERTICAL_WIND_SPEED'].values
-    ws4 = pd.read_csv(filename)['VERTICAL_WIND_SPEED_UNCERTAINTY'].values
-    ws5 = pd.read_csv(filename)['WIND_DIRECTION'].values
-    ws6 = pd.read_csv(filename)['WIND_DIRECTION_UNCERTAINTY'].values
-    ws7 = pd.read_csv(filename)['BOTH_BOOMS_USED_FOR_RETRIEVAL'].values
-    ws8 = pd.read_csv(filename)['ROVER_STILL'].values
+    elif(filename.endswith('.csv')):
+        wind_data = data[wind_field].values
 
-    return time, ws1, ws2, ws3, ws4, ws5, ws6, ws7, ws8
+    return time, wind_data
 
 def make_seconds_since_midnight(filename, time_field='LTST', sol=None):
     """
     The MEDA data provide times in the LTST field in the format "sol hour:minute:second".
 
     Args:
-        filename (str): name of the file
+        filename (str): path to CSV file/PDS4 file
         time_field (str, optional): name of time field to analyze
         sol (int, optional): which is the primary sol; if not given, will
         determine from filename
 
     Returns:
-        number of seconds in each row since midnight of the primary sol for that file
+        time: number of seconds in each row since midnight of the primary sol for that file
+        data: processed data from file
         """
 
     if(sol is None):
         primary_sol = which_sol(filename)
 
     data, _ = read_data(filename)
-    time_field = time_field.upper()
+    time_field = check_time_field(time_field)
 
     sols_str = [] #Sol is a solar day on Mars
     times_str = []
@@ -181,7 +182,7 @@ def make_seconds_since_midnight(filename, time_field='LTST', sol=None):
 
     time = time_conversion_to_seconds(times_str, delta_sols, time_field)
 
-    return time
+    return time, data
 
 def time_conversion_to_seconds(times_str, delta_sols,time_field):
     """
@@ -194,7 +195,7 @@ def time_conversion_to_seconds(times_str, delta_sols,time_field):
     Returns:
         converted time
     """
-    time_field = time_field.upper()
+    time_field = check_time_field(time_field)
     if(time_field=='LTST'):
         time = np.array([float(times_str[i].split(":")[0]) +\
                 delta_sols[i]*24. + float(times_str[i].split(":")[1])/60 +\
@@ -205,18 +206,14 @@ def time_conversion_to_seconds(times_str, delta_sols,time_field):
                 float(times_str[i].split(":")[1])/60 +\
                 float(times_str[i].split(":")[2])/3600. for i in
                 range(len(times_str))])
-    else:
-        raise Exception(time_field + " time field is not a valid option")
-
     return time
-
 
 def which_sol(filename):
     """
     Based on the filename, returns the sol corresponding to a data file
 
     Args:
-        filename (str): name of the file
+        filename (str): path to CSV file/PDS4 file
 
     Returns:
         sol (int) associated with that file
@@ -225,3 +222,63 @@ def which_sol(filename):
     ind = filename.find("WE__")
 
     return int(filename[ind+4:ind+8])
+
+def check_time_field(time_field:str):
+    """
+    Checks if time_field is a valid input
+    updates wind_field to the right format
+
+    Args:
+        time_field
+
+    Returns:
+        time_field
+    """
+    time_field = time_field.upper()
+    accepted_strings = ['LTST', 'LMST']
+    if time_field in accepted_strings:
+        return time_field
+    else:
+        print('----------------------------------------')
+        print('Accepted time_field input:\n')
+        for x in accepted_strings:
+            print(x)
+        print('----------------------------------------')
+        raise ValueError("time_field= '" + time_field + "' is not an accepted time_field input")
+
+
+def check_wind_field(wind_field:str):
+    """
+    Checks if wind_field is a valid input and 
+    updates wind_field to the right format
+
+    Args:
+        time_field
+
+    Returns:
+        time_field
+    """
+    wind_field = wind_field.upper()
+    accepted_strings = {
+    "HWS": "HORIZONTAL_WIND_SPEED",
+    "HWSU": "HORIZONTAL_WIND_SPEED_UNCERTAINTY",
+    "VWS": "VERTICAL_WIND_SPEED",
+    "VWSU": "VERTICAL_WIND_SPEED_UNCERTAINTY",
+    "WD": "WIND_DIRECTION",
+    "WDU": "WIND_DIRECTION_UNCERTAINTY",
+    "BBUFR": "BOTH_BOOMS_USED_FOR_RETRIEVAL",
+    "RS": "ROVER_STILL",
+    }
+
+    if wind_field in accepted_strings.keys():
+        return accepted_strings[wind_field]
+    elif wind_field in accepted_strings.values():
+        return wind_field
+    else:
+        print('Please check the wind_field argument')
+        print('----------------------------------------')
+        print('Accepted wind_field input:\n')
+        for x, y in accepted_strings.items():
+            print(x + ' - ' + y)
+        print('----------------------------------------')
+        raise ValueError("wind_field= '" + wind_field + "' is not an accepted wind_field input")
