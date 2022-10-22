@@ -1,8 +1,34 @@
 from math import isnan
-import muldoon
+import numpy
+import numpy as np
+from numpy.random import normal
+from muldoon import utils
+from muldoon import met_timeseries as met
 
-pressure_pds4_file = 'https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0000_0089/sol_0001/WE__0001___________DER_PS__________________P02.xml'
-pressure_csv_file = './tests/WE__0001___________DER_PS__________________P02.csv'
-wind_pds4_file = 'https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0180_0299/sol_0190/WE__0190___________DER_WS__________________P02.xml'
-wind_csv_file = './tests/WE__0190___________DER_WS__________________P02.csv'
+
+# Create time-series
+time = np.linspace(-1, 1, 1000)
+baseline = 0.
+ambient_speed_before = 0.
+ambient_speed_after = 0.
+max_speed = 9999999
+t0 = 0.
+Gamma = 0.01
+#right_answer = np.array([baseline, time, t0, Gamma])
+#profile = utils.wind_vortex_profile(max_speed, ambient_speed_before, baseline, time, t0, Gamma)
+#wt = met.WindSpeedTimeseries(time, profile, 
+#        popts = [right_answer],
+#        uncs = [np.array([0, 0, 0, 0, 0])])
+num_sigma = 5.
+
+#def test_retrieve_vortices():
+    # Make sure it retrieves the right number of data points
+#    wt.retrieve_vortices()
+#    assert(len(wt.vortices[0]["time"]) == 30)
+
+    # And test retrieve_vortices for pressure time series
+#    new_wt = met.WindSpeedTimeseries(time, profile, 
+#           popts=[right_answer], uncs=[np.array([0, 0, 0, 0, 0])])
+#    new_wt.retrieve_vortices()
+#    assert(len(new_wt.vortices[0]["time"]) == 30)
 
