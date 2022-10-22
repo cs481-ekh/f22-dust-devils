@@ -1,7 +1,4 @@
 import pytest
-import logging
-import numpy as np
-from numpy.random import normal
 from muldoon import met_timeseries as met
 from muldoon import utils as util
 from muldoon.read_data import *
