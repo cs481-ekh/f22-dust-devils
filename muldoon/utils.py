@@ -61,7 +61,7 @@ def redchisqg(ydata,ymod,deg=2,sd=None):
     return chisq/nu
 
 
-def fit_vortex(vortex, init_params, bounds, sigma=None, 
+def fit_vortex_ps(vortex, init_params, bounds, sigma=None, 
         rescale_uncertainties=True):
     """
     Fits modified Lorentzian to pressure/temperature profile
