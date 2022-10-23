@@ -292,10 +292,6 @@ def get_vortex(result):
     return vortex_dict
 
 
-
-
-
-
 def fit_vortex_ws(vortex, init_params, bounds, sigma=None, 
         rescale_uncertainties=True):
     """
