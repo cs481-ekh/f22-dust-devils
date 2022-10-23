@@ -47,6 +47,7 @@ def test_wind_profile():
     if(v_t != expected):
         assert False
 
+# Tests that the vortex returned is of type dictionary
 def test_get_vortex_type():
     result = []
     result = read_Perseverance_WS_data(wind_csv_file, sol=None, time_field='LTST', wind_field='HORIZONTAL_WIND_SPEED')
@@ -57,6 +58,7 @@ def test_get_vortex_type():
     else:
         assert False
 
+# Test for getting the time and data arrays. Verifying the data types returned and their values
 def test_get_vortex_use():
     result = []
     result = read_Perseverance_WS_data(wind_csv_file, sol=None, time_field='LTST', wind_field='HORIZONTAL_WIND_SPEED')
