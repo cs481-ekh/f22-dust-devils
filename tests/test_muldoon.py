@@ -60,12 +60,12 @@ def test_find_vortices():
     # Make sure the max peak in the convolution is where the vortex is
     assert(mt.time[mt.peak_indices[0]] < 2.*Gamma)
 
-def test_fit_vortex():
+def test_fit_vortex_ps():
 
     vortices = mt.find_vortices()
 
     # Test vortex fit
-    old_popt, old_unc = utils.fit_vortex(vortices[0], [0., 1., 0., 1., 0.01], 
+    old_popt, old_unc = utils.fit_vortex_ps(vortices[0], [0., 1., 0., 1., 0.01], 
                           [[-1, -1, np.min(vortices[0]["time"]), 0, 0],
                            [1, 1, np.max(vortices[0]["time"]), 2, 1]],
                           sigma=vortices[0]["scatter"])
@@ -80,7 +80,7 @@ def test_init_params_bounds():
     init_params = mt._determine_init_params(vortices[0])
     bounds = mt._determine_bounds(vortices[0], init_params)
     
-    popt, unc = utils.fit_vortex(vortices[0], init_params, bounds)
+    popt, unc = utils.fit_vortex_ps(vortices[0], init_params, bounds)
 
     # Make sure best-fit parameters all match the right answers
     assert(np.max(np.abs(popt - right_answer)/unc) < num_sigma)

@@ -61,7 +61,7 @@ def redchisqg(ydata,ymod,deg=2,sd=None):
     return chisq/nu
 
 
-def fit_vortex(vortex, init_params, bounds, sigma=None, 
+def fit_vortex_ps(vortex, init_params, bounds, sigma=None, 
         rescale_uncertainties=True):
     """
     Fits modified Lorentzian to pressure/temperature profile
@@ -276,3 +276,42 @@ def wind_vortex_profile(max_wind_speed, ambient_speed_before, b, time, t0, gamma
     ret_t = time - t0
 
     return float(max_wind_speed * (math.sqrt(1 + math.pow((ambient_speed_before/b), 2) * math.pow(ret_t, 2)) / (1 + math.pow(ret_t/(gamma/2), 2))))
+
+def fit_vortex_ws(vortex, init_params, bounds, sigma=None, 
+        rescale_uncertainties=True):
+    """
+    Fits vortex wind speed to wind speed profile
+
+    Args:
+        vortex (dict of float arrays): ["time"] - times, ["data"] - wind speed
+        init_params (float array): initial values including baseline, slope, initial central time, and initial duration
+        bounds (float array): bounds on fit parameters listed in the same order as in init_params
+        sigma (float, float array, optional): per-point uncertainties
+        rescale_uncertainties (bool, optional): whether to rescale uncertainties on fit parameters by sqrt(reduced chi-squared)
+
+    Returns:
+        fit parameters (float array) and uncertainties (float array)
+
+    """
+
+    x = vortex["time"]
+    y = vortex["data"]
+
+    if(sigma is not None):
+        popt, pcov = curve_fit(wind_vortex_profile, x, y, p0=init_params,
+                bounds=bounds, sigma=sigma)
+    else:
+        popt, pcov = curve_fit(wind_vortex_profile, x, y, p0=init_params,
+                bounds=bounds)
+    ymod = wind_vortex_profile(x, *popt)
+
+    if(rescale_uncertainties):
+        if(sigma is None):
+            sd = np.nanstd(y - ymod)
+        else:
+            sd = sigma
+        red_chisq = redchisqg(y, ymod, deg=5, sd=sd)
+
+        pcov *= np.sqrt(red_chisq)
+
+    return popt, np.sqrt(np.diag(pcov))
