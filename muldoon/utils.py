@@ -283,9 +283,8 @@ def fit_vortex_ws(vortex, init_params, bounds, sigma=None,
     Fits vortex wind speed to wind speed profile
 
     Args:
-        vortex (dict of float arrays): ["time"] - times, ["data"] -
-        wind speed
-        init_params (float array): initial values including baseline, slope, initial central time, initial delta, and initial duration
+        vortex (dict of float arrays): ["time"] - times, ["data"] - wind speed
+        init_params (float array): initial values including baseline, slope, initial central time, and initial duration
         bounds (float array): bounds on fit parameters listed in the same order as in init_params
         sigma (float, float array, optional): per-point uncertainties
         rescale_uncertainties (bool, optional): whether to rescale uncertainties on fit parameters by sqrt(reduced chi-squared)
