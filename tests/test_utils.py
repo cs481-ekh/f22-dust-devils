@@ -1,4 +1,6 @@
+from multiprocessing.dummy import Array
 import pytest
+import numpy as np
 from muldoon import met_timeseries as met
 from muldoon import utils as util
 from muldoon.read_data import *
@@ -46,7 +48,8 @@ def test_wind_profile():
         assert False
 
 def test_get_vortex_type():
-    _,result = read_Perseverance_WS_data(wind_csv_file, sol=None, time_field='LTST', wind_field='HORIZONTAL_WIND_SPEED')
+    result = []
+    result = read_Perseverance_WS_data(wind_csv_file, sol=None, time_field='LTST', wind_field='HORIZONTAL_WIND_SPEED')
     vortex = util.get_vortex(result)
 
     if(type(vortex) == dict):
@@ -55,12 +58,14 @@ def test_get_vortex_type():
         assert False
 
 def test_get_vortex_use():
-    _,result = read_Perseverance_WS_data(wind_csv_file, sol=None, time_field='LTST', wind_field='HORIZONTAL_WIND_SPEED')
+    result = []
+    result = read_Perseverance_WS_data(wind_csv_file, sol=None, time_field='LTST', wind_field='HORIZONTAL_WIND_SPEED')
     vortex = util.get_vortex(result)
 
     print(vortex)
+    print(type(vortex.get(1)))
 
-    if(vortex.get(1) != None and vortex.get(2) != None):
+    if(type(vortex.get(1)) == np.ndarray and type(vortex.get(2)) == np.ndarray):
         assert True
     else:
         assert False
