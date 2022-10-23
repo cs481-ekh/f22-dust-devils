@@ -45,6 +45,25 @@ def test_wind_profile():
     if(v_t != expected):
         assert False
 
+def test_get_vortex_type():
+    _,result = read_Perseverance_WS_data(wind_csv_file, sol=None, time_field='LTST', wind_field='HORIZONTAL_WIND_SPEED')
+    vortex = util.get_vortex(result)
+
+    if(type(vortex) == dict):
+        assert True
+    else:
+        assert False
+
+def test_get_vortex_use():
+    _,result = read_Perseverance_WS_data(wind_csv_file, sol=None, time_field='LTST', wind_field='HORIZONTAL_WIND_SPEED')
+    vortex = util.get_vortex(result)
+
+    print(vortex)
+
+    if(vortex.get(1) != None and vortex.get(2) != None):
+        assert True
+    else:
+        assert False
 
 if __name__ == '__main__':
     pytest.main()

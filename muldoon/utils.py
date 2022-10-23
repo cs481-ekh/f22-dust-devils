@@ -6,6 +6,7 @@ import numpy as np
 import math
 from scipy.optimize import curve_fit
 from scipy.stats import mode
+from muldoon import read_data
 
 def modified_lorentzian(t, baseline, slope, t0, Delta, Gamma):
     """
@@ -277,18 +278,24 @@ def wind_vortex_profile(max_wind_speed, ambient_speed_before, b, time, t0, gamma
 
     return float(max_wind_speed * (math.sqrt(1 + math.pow((ambient_speed_before/b), 2) * math.pow(ret_t, 2)) / (1 + math.pow(ret_t/(gamma/2), 2))))
 
-def get_vortex(filename):
+def get_vortex(result):
     """
     Creates the vortex dictionary for fit_vortex functions
 
     Args:
-        filename(csv or xml): 
+        result (float array):
     
     Returns:
         vortex (dict of float arrays)
-
     """
-    
+    vortex_dict = dict({1: result[0], 2: result[1]})
+    return vortex_dict
+
+
+
+
+
+
 def fit_vortex_ws(vortex, init_params, bounds, sigma=None, 
         rescale_uncertainties=True):
     """
