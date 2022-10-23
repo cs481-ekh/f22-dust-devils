@@ -1,10 +1,20 @@
 import pytest
-import logging
-import numpy as np
-from numpy.random import normal
 from muldoon import met_timeseries as met
 from muldoon import utils as util
 from muldoon.read_data import *
+
+pressure_pds4_file = 'https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0000_0089/sol_0001/WE__0001___________DER_PS__________________P02.xml'
+pressure_csv_file = './tests/WE__0001___________DER_PS__________________P02.csv'
+wind_pds4_file = 'https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0180_0299/sol_0190/WE__0190___________DER_WS__________________P02.xml'
+wind_csv_file = './tests/WE__0190___________DER_WS__________________P02.csv'
+
+time = 22.1
+max_wind_speed = 23
+u_1 = 3.5
+slope = 1.
+t0 = 0.
+Gamma = 0.01 
+expected = 0.0000910710
 
 def test_vortex_wind():
     """
@@ -27,14 +37,6 @@ def test_wind_profile():
     """
     Tests the vortex wind profile function
     """
-    time = 22.1
-    max_wind_speed = 23
-    u_1 = 3.5
-    slope = 1.
-    t0 = 0.
-    Gamma = 0.01 
-    expected = 0.0000910710
-
     # rounded to 9 digits after the decimal
     v_t = round(util.wind_vortex_profile(max_wind_speed, u_1, slope, time, t0, Gamma), 9)
 
@@ -42,6 +44,7 @@ def test_wind_profile():
         assert True 
     if(v_t != expected):
         assert False
+
 
 if __name__ == '__main__':
     pytest.main()
