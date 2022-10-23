@@ -1,46 +1,10 @@
 """
 A collections of routines to read in data from various missions
 """
-from urllib.error import URLError
 import numpy as np
 import pandas as pd
-from urllib.request import urlretrieve
 from pds4_tools import pds4_read
-import matplotlib.pyplot as plt
 
-def read_data(filename:str):
-    """
-    Verifies the existence of provide file
-
-    Args:
-        filename (str): path to CSV file/PDS4 file
-        
-    Returns:
-        data: processed data from provided file
-        file_status: 1 if file exists, else expception is thrown
-    """
-    file_status = 0
-    data = " "
-    error_message = "\n===>Filenotfounderror: There is no file " + filename + " in the working directory. Please check file name or path\n"
-    if filename.endswith('.xml'):
-        try:
-            data = pds4_read(filename)
-            data.info()
-            file_status = 1
-        except Exception as e:
-            print(error_message)
-            file_status = 0
-    else:
-        print("Processing file: " + filename)
-        try:
-            data = pd.read_csv(filename)
-            file_status = 1
-        except Exception as e:
-            print(error_message)
-            file_status = 0
-    print('========================================================')
-    return data, file_status
-    
 
 def read_Perseverance_PS_data(filename, sol=None, time_field='LTST'):
     """
@@ -53,13 +17,15 @@ def read_Perseverance_PS_data(filename, sol=None, time_field='LTST'):
         time, pressure (float array): times and pressures, times in seconds
         since midnight of sol associated with filename
     """
+    check_file_type('PS', filename)
     time_field = check_time_field(time_field)
-    time = make_seconds_since_midnight(filename, time_field=time_field)
-    data, dummy = read_data(filename)
+    FIELD = 'PRESSURE'
+    time, data= make_seconds_since_midnight(filename, time_field=time_field)
+    # data, dummy = read_data(filename)
     pressure = []
 
     if filename.endswith('.xml'):
-        pressure = data['TABLE']['PRESSURE']
+        pressure = data['TABLE'][FIELD]
     elif filename.endswith('.csv'):
         pressure = data['PRESSURE'].values
 
@@ -112,6 +78,7 @@ def read_Perseverance_WS_data(filename, sol=None, time_field='LTST', wind_field=
         time, ws1-8 (float array): times and dimensions of wind speed, times in seconds
         since midnight of sol associated with filename
     """
+    check_file_type('WS', filename)
     wind_field = check_wind_field(wind_field)
     time_field = check_time_field(time_field)
     time, data= make_seconds_since_midnight(filename, time_field=time_field)
@@ -223,6 +190,62 @@ def which_sol(filename):
 
     return int(filename[ind+4:ind+8])
 
+#################Helper functions##############################################
+###############################################################################
+def read_data(filename:str):
+    """
+    Verifies the existence of provide file
+
+    Args:
+        filename (str): path to CSV file/PDS4 file
+        
+    Returns:
+        data: processed data from provided file
+        file_status: 1 if file exists, else expception is thrown
+    """
+
+    file_status = 0
+    data = " "
+    error_message = "\n===>Filenotfounderror: There is no file " + filename + " in the working directory. Please check file name or path\n"
+    if filename.endswith('.xml'):
+        try:
+            data = pds4_read(filename)
+            data.info()
+            file_status = 1
+        except Exception as e:
+            print(error_message)
+            file_status = 0
+    else:
+        print("Processing file: " + filename)
+        try:
+            data = pd.read_csv(filename)
+            file_status = 1
+        except Exception as e:
+            print(error_message)
+            file_status = 0
+    print('===========================================================================')
+    return data, file_status
+
+def check_file_type(data_requested:str, filename:str):
+    """
+    Checks if requested data is found in the
+    input file
+
+    Args:
+        data requested: str
+        filename
+
+    Returns:
+            void
+    """
+    error_message = "\n===>Please check file type '" + data_requested + "' data is not contained in " + filename
+    data_requested = data_requested.upper()
+    if data_requested in filename:
+        return
+    else:
+        raise KeyError(error_message)
+
+
 def check_time_field(time_field:str):
     """
     Checks if time_field is a valid input
@@ -245,7 +268,6 @@ def check_time_field(time_field:str):
             print(x)
         print('----------------------------------------')
         raise ValueError("time_field= '" + time_field + "' is not an accepted time_field input")
-
 
 def check_wind_field(wind_field:str):
     """
@@ -282,3 +304,5 @@ def check_wind_field(wind_field:str):
             print(x + ' - ' + y)
         print('----------------------------------------')
         raise ValueError("wind_field= '" + wind_field + "' is not an accepted wind_field input")
+###############################################################################
+
