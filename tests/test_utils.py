@@ -65,9 +65,8 @@ def test_get_vortex_use():
     vortex = util.get_vortex(result)
 
     print(vortex)
-    print(type(vortex.get(1)))
 
-    if(type(vortex.get(1)) == np.ndarray and type(vortex.get(2)) == np.ndarray):
+    if(type(vortex.get("time")) == np.ndarray and type(vortex.get("data")) == np.ndarray):
         assert True
     else:
         assert False

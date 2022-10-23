@@ -288,7 +288,7 @@ def get_vortex(result):
     Returns:
         vortex (dict of float arrays)
     """
-    vortex_dict = dict({1: result[0], 2: result[1]})
+    vortex_dict = dict({"time": result[0], "data": result[1]})
     return vortex_dict
 
 
