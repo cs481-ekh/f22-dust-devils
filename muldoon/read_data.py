@@ -147,11 +147,11 @@ def make_seconds_since_midnight(filename, time_field='LTST', sol=None):
         elif(filename.endswith('.csv')):
             times_str = data[time_field].str.split("M", expand=True)[1].values
 
-    time = time_conversion_to_seconds(times_str, delta_sols, time_field)
+    time = time_to_hours_decimal(times_str, delta_sols, time_field)
 
     return time, data
 
-def time_conversion_to_seconds(times_str, delta_sols,time_field):
+def time_to_hours_decimal(times_str, delta_sols,time_field):
     """
     Time coversion for easy usability
 
