@@ -33,20 +33,20 @@ def test_file_verification_csv_file_does_not_exist():
     # wrong csv file
     assert(file_status == 0)
 
-def test_time_conversion_to_seconds_ltst():
+def test_time_to_hours_decimal_ltst():
     times_str = ['15:28:01']
     delta_sols = [0.0]
     time_field = 'LTST'
     expected = [15.46694444]
-    result = time_conversion_to_seconds(times_str, delta_sols,time_field)
+    result = time_to_hours_decimal(times_str, delta_sols,time_field)
     assert(round(result[0], 8) == expected[0])
 
-def test_time_conversion_to_seconds_lmst():
+def test_time_to_hours_decimal_lmst():
     times_str = ['16:05:31.315']
     delta_sols = [0.0]
     time_field = 'LMST'
     expected = [16.09203194]
-    result = time_conversion_to_seconds(times_str, delta_sols,time_field)
+    result = time_to_hours_decimal(times_str, delta_sols,time_field)
     assert(round(result[0], 8) == expected[0])
 
 def test_make_seconds_since_midnight_ltst():
