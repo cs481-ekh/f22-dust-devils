@@ -71,5 +71,5 @@ def test_get_vortex_use():
     else:
         assert False
         
-  if __name__ == '__main__':
+ if __name__ == '__main__':
     pytest.main()
