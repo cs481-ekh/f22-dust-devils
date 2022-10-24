@@ -31,6 +31,7 @@ def read_Perseverance_PS_data(filename, sol=None, time_field='LTST'):
 
     return time, pressure
 
+
 def read_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST',
         sol=None):
     """
@@ -47,25 +48,37 @@ def read_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST',
         since midnight of sol associated with filename
 
     """
-    time_field=time_field.upper()
-    # Note: ATS measures at 2 Hz, so there will be some duplicate LTST-values!
-    time = make_seconds_since_midnight(filename, time_field=time_field)
+    check_file_type('ATS', filename)
+    which_ATS = check_ATS_field(which_ATS)
 
-    # Which ATS time-series to read in?
-    if(isinstance(which_ATS, int)):
-        which_ATS_str = "ATS_LOCAL_TEMP%i" % which_ATS
-        temperature = pd.read_csv(filename)[which_ATS_str].values
+    time_field=check_time_field(time_field)
+    # Note: ATS measures at 2 Hz, so there will be some duplicate LTST-values!
+    time, data = make_seconds_since_midnight(filename, time_field=time_field)
+
+    if which_ATS == 'ALL':
+        if filename.endswith('.xml'):
+            ATS1 = data['TABLE']["ATS_LOCAL_TEMP1"]
+            ATS2 = data['TABLE']["ATS_LOCAL_TEMP2"]
+            ATS3 = data['TABLE']["ATS_LOCAL_TEMP3"]
+            ATS4 = data['TABLE']["ATS_LOCAL_TEMP4"]
+            ATS5 = data['TABLE']["ATS_LOCAL_TEMP5"]
+        else:
+            ATS1 = pd.read_csv(filename)["ATS_LOCAL_TEMP1"].values
+            ATS2 = pd.read_csv(filename)["ATS_LOCAL_TEMP2"].values
+            ATS3 = pd.read_csv(filename)["ATS_LOCAL_TEMP3"].values
+            ATS4 = pd.read_csv(filename)["ATS_LOCAL_TEMP4"].values
+            ATS5 = pd.read_csv(filename)["ATS_LOCAL_TEMP5"].values
+
+        return time, [ATS1, ATS2, ATS3, ATS4, ATS5]
+
+    else:
+        if filename.endswith('.xml'):
+            temperature = data['TABLE'][which_ATS];
+        else: 
+            temperature = data[which_ATS].values;
 
         return time, temperature
 
-    elif(isinstance(which_ATS, str) and (which_ATS == "all")):
-        ATS1 = pd.read_csv(filename)["ATS_LOCAL_TEMP1"].values
-        ATS2 = pd.read_csv(filename)["ATS_LOCAL_TEMP2"].values
-        ATS3 = pd.read_csv(filename)["ATS_LOCAL_TEMP3"].values
-        ATS4 = pd.read_csv(filename)["ATS_LOCAL_TEMP4"].values
-        ATS5 = pd.read_csv(filename)["ATS_LOCAL_TEMP5"].values
-
-        return time, [ATS1, ATS2, ATS3, ATS4, ATS5]
     
 def read_Perseverance_WS_data(filename, sol=None, time_field='LTST', wind_field='HORIZONTAL_WIND_SPEED'):
     """
@@ -304,5 +317,47 @@ def check_wind_field(wind_field:str):
             print(x + ' - ' + y)
         print('----------------------------------------')
         raise ValueError("wind_field= '" + wind_field + "' is not an accepted wind_field input")
-###############################################################################
+    
+def check_ATS_field(ats_field):
+    """
+    Checks if wind_field is a valid input and 
+    updates wind_field to the right format
 
+    Args:
+        ats_field
+
+    Returns:
+        ats_field
+    """
+    if isinstance(ats_field, str):
+        ats_field = ats_field.upper()
+
+    accepted_strings = {
+    1: "ATS_LOCAL_TEMP1",
+    2: "ATS_LOCAL_TEMP2",
+    3: "ATS_LOCAL_TEMP3",
+    4: "ATS_LOCAL_TEMP4",
+    5: "ATS_LOCAL_TEMP5",
+    0: 'ALL'
+    }
+    if ats_field == 'all' or ats_field == 'ALL':
+        return accepted_strings[0]
+    elif ats_field in accepted_strings.keys():
+        return accepted_strings[ats_field]
+    elif ats_field in accepted_strings.values():
+        return ats_field
+    else:
+        print('Please check the ats_field argument')
+        print('----------------------------------------')
+        print('Accepted wind_field input:\n')
+        for x, y in accepted_strings.items():
+            print(str(x) + ' or ' + y)
+        print('----------------------------------------')
+        raise ValueError("===>ats_field= '" + str(ats_field) + "' is not an accepted wind_field input")
+
+###############################################################################
+filename = './tests/WE__0010___________CAL_ATS_________________P01.csv'
+# filename = 'https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_calibrated_env/sol_0000_0089/sol_0010/WE__0010___________CAL_ATS_________________P01.xml'
+_,data = read_Perseverance_ATS_data(filename,0,'LTST', None)
+print(data)
+# print(check_ATS_field('ALL'))
