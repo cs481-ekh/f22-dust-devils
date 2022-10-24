@@ -1,4 +1,6 @@
+from multiprocessing.dummy import Array
 import pytest
+import numpy as np
 from muldoon import met_timeseries as met
 from muldoon import utils as util
 from muldoon.read_data import *
@@ -45,6 +47,26 @@ def test_wind_profile():
     if(v_t != expected):
         assert False
 
+# Tests that the vortex returned is of type dictionary
+def test_get_vortex_type():
+    result = []
+    result = read_Perseverance_WS_data(wind_csv_file, sol=None, time_field='LTST', wind_field='HORIZONTAL_WIND_SPEED')
+    vortex = util.get_vortex(result)
 
-if __name__ == '__main__':
-    pytest.main()
+    if(type(vortex) == dict):
+        assert True
+    else:
+        assert False
+
+# Test for getting the time and data arrays. Verifying the data types returned and their values
+def test_get_vortex_use():
+    result = []
+    result = read_Perseverance_WS_data(wind_csv_file, sol=None, time_field='LTST', wind_field='HORIZONTAL_WIND_SPEED')
+    vortex = util.get_vortex(result)
+
+    print(vortex)
+
+    if(type(vortex.get("time")) == np.ndarray and type(vortex.get("data")) == np.ndarray):
+        assert True
+    else:
+        assert False
