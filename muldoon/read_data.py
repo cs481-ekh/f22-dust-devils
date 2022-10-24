@@ -356,8 +356,3 @@ def check_ATS_field(ats_field):
         raise ValueError("===>ats_field= '" + str(ats_field) + "' is not an accepted wind_field input")
 
 ###############################################################################
-filename = './tests/WE__0010___________CAL_ATS_________________P01.csv'
-# filename = 'https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_calibrated_env/sol_0000_0089/sol_0010/WE__0010___________CAL_ATS_________________P01.xml'
-_,data = read_Perseverance_ATS_data(filename,0,'LTST', None)
-print(data)
-# print(check_ATS_field('ALL'))
