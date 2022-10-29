@@ -726,7 +726,7 @@ class TemperatureTimeseries(MetTimeseries):
         return np.array([init_baseline, init_slope, init_t0, init_Delta, 
             init_Gamma])
 
-    def _determine_bounds(self, vortex, init_params, init_unc,
+    def _determine_bounds(self, vortex, init_params,
             slope_fac=10., Gamma_fac=1.):
         """
         Estimate reasonable bounds on fit parameters
