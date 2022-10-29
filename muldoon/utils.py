@@ -274,9 +274,8 @@ def wind_vortex_profile(max_wind_speed, ambient_speed_before, b, time, t0, gamma
         vortex wind profile (float array): V(t)
 
     """
-    ret_t = time - t0
 
-    return float(max_wind_speed * (math.sqrt(1 + math.pow((ambient_speed_before/b), 2) * math.pow(ret_t, 2)) / (1 + math.pow(ret_t/(gamma/2), 2))))
+    return max_wind_speed * ((1 + ((ambient_speed_before/b)**2) * (time-t0)**2)**(1/2) / (1 + ((time-t0)/(gamma/2))**2))
 
 def get_vortex(result):
     """
