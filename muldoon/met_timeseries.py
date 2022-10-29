@@ -793,8 +793,8 @@ class WindSpeedTimeseries(MetTimeseries):
         # The wind speed vortex signals
         self.vortices = None
     
-    def _determine_init_params(self, vortex, init_t0, init_Gamma,
-            init_baseline=None, init_slope=None, init_Delta=None):
+    def _determine_init_params(self, vortex, init_t0=None, init_Gamma=None,
+            init_baseline=None, init_slope=None, init_DeltaP=None):
         """
         Estimate reasonable initial parameters for fitting a vortex pressure
         signal
@@ -833,7 +833,7 @@ class WindSpeedTimeseries(MetTimeseries):
             init_Gamma])
             
 
-    def _determine_bounds(self, vortex, init_params, init_unc,
+    def _determine_bounds(self, vortex, init_params,
             slope_fac=10., Gamma_fac=1.):
         """
         Estimate reasonable bounds on fit parameters
