@@ -7,6 +7,7 @@ from scipy.stats import mode
 from statsmodels.robust import mad
 
 import muldoon.utils as utils
+import muldoon.read_data as read_data
 
 
 __all__ = ['MetTimeseries']
