@@ -7,6 +7,10 @@ import math
 from scipy.optimize import curve_fit
 from scipy.stats import mode
 from muldoon import read_data
+from muldoon.read_data import *
+import matplotlib.pyplot as plt
+
+from read_data import check_ATS_field
 
 def modified_lorentzian(t, baseline, slope, t0, Delta, Gamma):
     """
@@ -329,3 +333,16 @@ def fit_vortex_ws(vortex, init_params, bounds, sigma=None,
         pcov *= np.sqrt(red_chisq)
 
     return popt, np.sqrt(np.diag(pcov))
+#################################
+#           plots               #
+#################################
+def plot_perseverance_ats_data(filename):
+    time,result = read_Perseverance_ATS_data(ats_csv_file,1,'LTST',None)
+    which_ATS = check_ATS_field(1)
+    plt.scatter(time,result)
+    plt.title("ATS")
+    plt.ylabel(which_ATS)
+    plt.xlabel("time")
+    plt.show()
+
+ats_csv_file = './tests/WE__0010___________CAL_ATS_________________P01.csv'
