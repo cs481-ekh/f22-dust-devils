@@ -204,8 +204,9 @@ def which_sol(filename):
 
     return int(filename[ind+4:ind+8])
 
-#################Helper functions##############################################
-###############################################################################
+#################################
+#        Helper Function        #
+#################################
 def read_data(filename:str):
     """
     Verifies the existence of provide file
