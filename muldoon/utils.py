@@ -1,12 +1,13 @@
 """
 Utility functions for muldoon
 """
-import numpy
 import numpy as np
 import math
 from scipy.optimize import curve_fit
 from scipy.stats import mode
 from muldoon.read_data import *
+
+
 
 def modified_lorentzian(t, baseline, slope, t0, Delta, Gamma):
     """
