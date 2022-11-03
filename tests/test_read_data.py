@@ -58,7 +58,6 @@ def test_make_seconds_since_midnight_ltst():
     expected = [15.46694444]
     assert(round(result[0], 8) == expected[0])
 
-
 def test_make_seconds_since_midnight_lmst():
     result,_ = make_seconds_since_midnight(pressure_csv_file,'lmst', None)
     expected = [16.09203194]

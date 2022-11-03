@@ -4,6 +4,7 @@ A collections of routines to read in data from various missions
 import numpy as np
 import pandas as pd
 from pds4_tools import pds4_read
+import matplotlib.pyplot as plt
 
 
 def read_Perseverance_PS_data(filename, sol=None, time_field='LTST'):
@@ -355,4 +356,44 @@ def check_ATS_field(ats_field):
         print('----------------------------------------')
         raise ValueError("===>ats_field= '" + str(ats_field) + "' is not an accepted wind_field input")
 
-###############################################################################
+#################################
+#           plots               #
+#################################
+def plot_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST', save_file=False, scatter=False):
+    """
+    Read in Perseverance MEDA ATS data - https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/
+
+    Args:
+        filename (str): path to CSV file/PDS4 file
+        which_ATS (int or str): which of the five ATS sensors to read in;
+        if "all", all of the ATS time series are returned
+        time_field (str, optional): which time base to use
+        save: figure file name - defaults to 'Figure 1' unless specified
+        scatter: produces a scatter plot if True, else produces line plot
+
+    Returns:
+        time, temperarture plot (float array): times and temperature, times in hours
+        since midnight of sol associated with filename
+
+    """
+    time,result = read_Perseverance_ATS_data(filename,which_ATS,time_field,None)
+    which_ATS = check_ATS_field(which_ATS)
+    plt.title(which_ATS + " vs TIME")
+    plt.ylabel(which_ATS)
+
+    plt.xlabel(time_field + " time")
+    if(scatter==True):
+        plt.scatter(time,result)
+    else:
+        plt.plot(time,result)
+
+    if(save_file == True):
+        save = 'Figure 1'
+        plt.savefig(save)
+    elif(type(save) == str):
+        plt.savefig(save)
+
+    plt.show()
+
+# ats_csv_file = './tests/WE__0010___________CAL_ATS_________________P01.csv'
+# plot_Perseverance_ATS_data(ats_csv_file, which_ATS =3, save="tEsting", time_field='LMST')
