@@ -336,13 +336,17 @@ def fit_vortex_ws(vortex, init_params, bounds, sigma=None,
 #################################
 #           plots               #
 #################################
-def plot_perseverance_ats_data(filename):
-    time,result = read_Perseverance_ATS_data(ats_csv_file,1,'LTST',None)
-    which_ATS = check_ATS_field(1)
-    plt.scatter(time,result)
+def plot_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST', save=False, scatter=False, figure='Figure 1'):
+    time,result = read_Perseverance_ATS_data(filename,which_ATS,time_field,None)
+    which_ATS = check_ATS_field(which_ATS)
     plt.title("ATS")
     plt.ylabel(which_ATS)
-    plt.xlabel("time")
+    plt.xlabel(time_field + " time")
+    if(scatter==True):
+        plt.scatter(time,result)
+    else:
+        plt.plot(time,result)
     plt.show()
+    if(save==True):
+        plt.savefig(figure)
 
-ats_csv_file = './tests/WE__0010___________CAL_ATS_________________P01.csv'
