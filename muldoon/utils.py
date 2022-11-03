@@ -10,7 +10,7 @@ from muldoon import read_data
 from muldoon.read_data import *
 import matplotlib.pyplot as plt
 
-from read_data import check_ATS_field
+from muldoon.read_data import check_ATS_field
 
 def modified_lorentzian(t, baseline, slope, t0, Delta, Gamma):
     """
