@@ -6,11 +6,7 @@ import numpy as np
 import math
 from scipy.optimize import curve_fit
 from scipy.stats import mode
-from muldoon import read_data
 from muldoon.read_data import *
-
-
-from read_data import check_ATS_field
 
 def modified_lorentzian(t, baseline, slope, t0, Delta, Gamma):
     """
