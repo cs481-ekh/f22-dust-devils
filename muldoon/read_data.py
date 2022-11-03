@@ -388,10 +388,10 @@ def plot_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST', save_fi
         plt.plot(time,result)
 
     if(save_file == True):
-        save = 'Figure 1'
-        plt.savefig(save)
-    elif(type(save) == str):
-        plt.savefig(save)
+        save_file = 'Figure 1'
+        plt.savefig(save_file)
+    elif(type(save_file) == str):
+        plt.savefig(save_file)
 
     plt.show()
 
