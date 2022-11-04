@@ -253,12 +253,12 @@ def check_file_type(data_requested:str, filename:str):
     Returns:
             void
     """
-    error_message = "\n===>Please check file type '" + data_requested + "' data is not contained in " + filename
+    error_message = "\n===>Please check file type. '" + data_requested + "' data is not contained in " + filename
     data_requested = data_requested.upper()
     if data_requested in filename:
         return
     else:
-        raise KeyError(error_message)
+        raise Exception(error_message)
 
 
 def check_time_field(time_field:str):
@@ -277,12 +277,12 @@ def check_time_field(time_field:str):
     if time_field in accepted_strings:
         return time_field
     else:
-        print('----------------------------------------')
-        print('Accepted time_field input:\n')
+        print('--------------------------')
+        print('Accepted time_field input:')
         for x in accepted_strings:
             print(x)
-        print('----------------------------------------')
-        raise ValueError("time_field= '" + time_field + "' is not an accepted time_field input")
+        print('--------------------------')
+        raise Exception("\n===>time_field= '" + time_field + "' is not an accepted time_field input")
 
 def check_wind_field(wind_field:str):
     """
@@ -318,7 +318,7 @@ def check_wind_field(wind_field:str):
         for x, y in accepted_strings.items():
             print(x + ' - ' + y)
         print('----------------------------------------')
-        raise ValueError("wind_field= '" + wind_field + "' is not an accepted wind_field input")
+        raise Exception("wind_field= '" + wind_field + "' is not an accepted wind_field input")
     
 def check_ATS_field(ats_field):
     """
@@ -350,12 +350,12 @@ def check_ATS_field(ats_field):
         return ats_field
     else:
         print('Please check the ats_field argument')
-        print('----------------------------------------')
+        print('----------------------------')
         print('Accepted wind_field input:\n')
         for x, y in accepted_strings.items():
             print(str(x) + ' or ' + y)
-        print('----------------------------------------')
-        raise ValueError("===>ats_field= '" + str(ats_field) + "' is not an accepted wind_field input")
+        print('----------------------------')
+        raise Exception("\n===>ats_field= '" + str(ats_field) + "' is not an accepted ats_field input")
 
 #################################
 #           plots               #
@@ -398,3 +398,4 @@ def plot_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST', save_fi
 
 # ats_csv_file = './tests/WE__0010___________CAL_ATS_________________P01.csv'
 # plot_Perseverance_ATS_data(ats_csv_file, which_ATS =3, save="tEsting", time_field='LMST')
+# plot_Perseverance_ATS_data(ats_csv_file, save_file=True)
