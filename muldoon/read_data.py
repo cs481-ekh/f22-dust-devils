@@ -13,6 +13,11 @@ def read_Perseverance_PS_data(filename, sol=None, time_field='LTST',start=0,end=
 
     Args:
         filename (str): path to CSV file/PDS4 file
+        sol (int, optional): which is the primary sol; if not given, will
+        determine from filename
+        time_field (str, optional): which time base to use. LTST or LMST
+        start(int, optional): start index
+        end(int, optional): end index
 
     Returns:
         time, pressure (float array): times and pressures, times in seconds
@@ -30,8 +35,8 @@ def read_Perseverance_PS_data(filename, sol=None, time_field='LTST',start=0,end=
     elif filename.endswith('.csv'):
         pressure = data['PRESSURE'].values
 
-    pressure=array_sections(pressure,start,end)
-    time=array_sections(time,start,end)
+    pressure=array_slice(pressure,start,end)
+    time=array_slice(time,start,end)
 
     return time, pressure
 
@@ -53,8 +58,8 @@ def read_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST',sol=None
     """
     check_file_type('ATS', filename)
     which_ATS = check_ATS_field(which_ATS)
-
     time_field=check_time_field(time_field)
+    
     # Note: ATS measures at 2 Hz, so there will be some duplicate LTST-values!
     time, data = make_seconds_since_midnight(filename, time_field=time_field)
 
@@ -72,12 +77,12 @@ def read_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST',sol=None
             ATS4 = pd.read_csv(filename)["ATS_LOCAL_TEMP4"].values
             ATS5 = pd.read_csv(filename)["ATS_LOCAL_TEMP5"].values
 
-        ATS1 = array_sections(ATS1,start,end)
-        ATS2 = array_sections(ATS2,start,end)
-        ATS3 = array_sections(ATS3,start,end)
-        ATS4 = array_sections(ATS4,start,end)
-        ATS5 = array_sections(ATS5,start,end)
-        time=array_sections(time,start,end)
+        ATS1 = array_slice(ATS1,start,end)
+        ATS2 = array_slice(ATS2,start,end)
+        ATS3 = array_slice(ATS3,start,end)
+        ATS4 = array_slice(ATS4,start,end)
+        ATS5 = array_slice(ATS5,start,end)
+        time=array_slice(time,start,end)
 
         return time, [ATS1, ATS2, ATS3, ATS4, ATS5]
 
@@ -87,8 +92,8 @@ def read_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST',sol=None
         else: 
             temperature = data[which_ATS].values;
 
-    temperature = array_sections(temperature,start,end)
-    time=array_sections(time,start,end)
+    temperature = array_slice(temperature,start,end)
+    time=array_slice(time,start,end)
     
     return time, temperature
 
@@ -99,6 +104,12 @@ def read_Perseverance_WS_data(filename, sol=None, time_field='LTST', wind_field=
 
     Args:
         filename (str): path to CSV file/PDS4 file
+        sol (int, optional): which is the primary sol; if not given, will
+        determine from filename
+        time_field (str, optional): which time base to use. LTST or LMST
+        wind_field: wind field data in consideration
+        start(int, optional): start index
+        end(int, optional): end index
 
     Returns:
         time, ws1-8 (float array): times and dimensions of wind speed, times in seconds
@@ -116,8 +127,8 @@ def read_Perseverance_WS_data(filename, sol=None, time_field='LTST', wind_field=
     elif(filename.endswith('.csv')):
         wind_data = data[wind_field].values
 
-    wind_data=array_sections(wind_data,start,end)
-    time=array_sections(time,start,end)
+    wind_data=array_slice(wind_data,start,end)
+    time=array_slice(time,start,end)
     return time, wind_data
 
 def make_seconds_since_midnight(filename, time_field='LTST', sol=None):
@@ -374,7 +385,19 @@ def check_ATS_field(ats_field):
         print('----------------------------')
         raise Exception("\n===>ats_field= '" + str(ats_field) + "' is not an accepted ats_field input")
     
-def array_sections(data, start=0, end=0):
+def array_slice(data, start=0, end=0):
+    """
+    Array slicing option - helps take elements from one 
+    given index to another given index.
+
+    Args:
+        data: array to slice
+        start: start element
+        end: end element
+
+    Returns:
+        sliced array
+    """   
     if type(data) is np.ndarray:
         data=data
     else:
@@ -391,7 +414,7 @@ def array_sections(data, start=0, end=0):
 #################################
 #           plots               #
 #################################
-def plot_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST', save_file=False, scatter=False):
+def plot_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST', save_file=False, scatter=False, start=0,end=0):
     """
     Read in Perseverance MEDA ATS data - https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/
 
@@ -400,15 +423,17 @@ def plot_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST', save_fi
         which_ATS (int or str): which of the five ATS sensors to read in;
         if "all", all of the ATS time series are returned
         time_field (str, optional): which time base to use
-        save: figure file name - defaults to 'Figure 1' unless specified
+        save_file: figure file name - defaults to 'Figure 1' unless specified
         scatter: produces a scatter plot if True, else produces line plot
+        start(int, optional): start index
+        end(int, optional): end index
 
     Returns:
         time, temperarture plot (float array): times and temperature, times in hours
         since midnight of sol associated with filename
 
     """
-    time,result = read_Perseverance_ATS_data(filename,which_ATS,time_field,None)
+    time,result = read_Perseverance_ATS_data(filename,which_ATS,time_field,None,start=start,end=end)
     which_ATS = check_ATS_field(which_ATS)
     plt.title(which_ATS + " vs TIME")
     plt.ylabel(which_ATS)
@@ -426,15 +451,3 @@ def plot_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST', save_fi
         plt.savefig(save_file)
 
     plt.show()
-
-# ats_csv_file = 'https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_calibrated_env/sol_0000_0089/sol_0010/WE__0010___________CAL_ATS_________________P01.xml'
-# ats_csv_file = './tests/WE__0010___________CAL_ATS_________________P01.csv'
-# pressure_csv_file = './tests/WE__0001___________DER_PS__________________P02.csv'
-# wind_csv_file = './tests/WE__0190___________DER_WS__________________P02.csv'
-# plot_Perseverance_ATS_data(ats_csv_file, which_ATS =3, save="tEsting", time_field='LMST')
-# plot_Perseverance_ATS_data(ats_csv_file, save_file=True)
-# data = read_Perseverance_ATS_data(ats_csv_file, 'all', time_field='LTST',sol=None, start=10,end=20)
-# data = read_Perseverance_PS_data(pressure_csv_file, sol=None, time_field='LTST',start=10,end=20)
-# data = read_Perseverance_WS_data(wind_csv_file, sol=None, time_field='LTST', wind_field='HORIZONTAL_WIND_SPEED',start=2,end=3)
-
-# print(data)
