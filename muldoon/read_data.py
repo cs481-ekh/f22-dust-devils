@@ -7,7 +7,7 @@ from pds4_tools import pds4_read
 import matplotlib.pyplot as plt
 
 
-def read_Perseverance_PS_data(filename, sol=None, time_field='LTST'):
+def read_Perseverance_PS_data(filename, sol=None, time_field='LTST',start=0,end=0):
     """
     Read in Perseverance MEDA PS data - https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/
 
@@ -30,11 +30,13 @@ def read_Perseverance_PS_data(filename, sol=None, time_field='LTST'):
     elif filename.endswith('.csv'):
         pressure = data['PRESSURE'].values
 
+    pressure=array_sections(pressure,start,end)
+    time=array_sections(time,start,end)
+
     return time, pressure
 
 
-def read_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST',
-        sol=None):
+def read_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST',sol=None, start=0, end=0):
     """
     Read in Perseverance MEDA ATS data - https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/
 
@@ -42,7 +44,7 @@ def read_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST',
         filename (str): path to CSV file/PDS4 file
         which_ATS (int or str): which of the five ATS sensors to read in;
         if "all", all of the ATS time series are returned
-        time_field (str, optional): which time base to use
+        time_field (str, optional): which time base to use. LTST or LMST
 
     Returns:
         time, pressure (float array): times and pressures, times in seconds
@@ -70,18 +72,28 @@ def read_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST',
             ATS4 = pd.read_csv(filename)["ATS_LOCAL_TEMP4"].values
             ATS5 = pd.read_csv(filename)["ATS_LOCAL_TEMP5"].values
 
+        ATS1 = array_sections(ATS1,start,end)
+        ATS2 = array_sections(ATS2,start,end)
+        ATS3 = array_sections(ATS3,start,end)
+        ATS4 = array_sections(ATS4,start,end)
+        ATS5 = array_sections(ATS5,start,end)
+        time=array_sections(time,start,end)
+
         return time, [ATS1, ATS2, ATS3, ATS4, ATS5]
 
     else:
         if filename.endswith('.xml'):
-            temperature = data['TABLE'][which_ATS];
+            temperature = data['TABLE'][which_ATS]
         else: 
             temperature = data[which_ATS].values;
 
-        return time, temperature
+    temperature = array_sections(temperature,start,end)
+    time=array_sections(time,start,end)
+    
+    return time, temperature
 
     
-def read_Perseverance_WS_data(filename, sol=None, time_field='LTST', wind_field='HORIZONTAL_WIND_SPEED'):
+def read_Perseverance_WS_data(filename, sol=None, time_field='LTST', wind_field='HORIZONTAL_WIND_SPEED',start=0,end=0):
     """
     Read in WS data - (link)
 
@@ -104,6 +116,8 @@ def read_Perseverance_WS_data(filename, sol=None, time_field='LTST', wind_field=
     elif(filename.endswith('.csv')):
         wind_data = data[wind_field].values
 
+    wind_data=array_sections(wind_data,start,end)
+    time=array_sections(time,start,end)
     return time, wind_data
 
 def make_seconds_since_midnight(filename, time_field='LTST', sol=None):
@@ -182,11 +196,13 @@ def time_to_hours_decimal(times_str, delta_sols,time_field):
                 delta_sols[i]*24. + float(times_str[i].split(":")[1])/60 +\
                 float(times_str[i].split(":")[2])/3600. for i in
                 range(len(times_str))])
+
     elif(time_field=='LMST'):
         time = np.array([float(times_str[i].split(":")[0]) +\
                 float(times_str[i].split(":")[1])/60 +\
                 float(times_str[i].split(":")[2])/3600. for i in
                 range(len(times_str))])
+
     return time
 
 def which_sol(filename):
@@ -224,7 +240,7 @@ def read_data(filename:str):
     error_message = "\n===>Filenotfounderror: There is no file " + filename + " in the working directory. Please check file name or path\n"
     if filename.endswith('.xml'):
         try:
-            data = pds4_read(filename)
+            data = pds4_read(filename,lazy_load=True)
             data.info()
             file_status = 1
         except Exception as e:
@@ -239,6 +255,7 @@ def read_data(filename:str):
             print(error_message)
             file_status = 0
     print('===========================================================================')
+     
     return data, file_status
 
 def check_file_type(data_requested:str, filename:str):
@@ -356,6 +373,20 @@ def check_ATS_field(ats_field):
             print(str(x) + ' or ' + y)
         print('----------------------------')
         raise Exception("\n===>ats_field= '" + str(ats_field) + "' is not an accepted ats_field input")
+    
+def array_sections(data, start=0, end=0):
+    if type(data) is np.ndarray:
+        data=data
+    else:
+        data = np.array(data)
+
+    if(start>0 and end>start):
+        data=(data[start:end])
+    elif((start>0 and end<start)):
+        data=(data[start:])
+    elif(start==0 and end > 0):
+        data=(data[:end])
+    return data
 
 #################################
 #           plots               #
@@ -396,6 +427,14 @@ def plot_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST', save_fi
 
     plt.show()
 
+# ats_csv_file = 'https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_calibrated_env/sol_0000_0089/sol_0010/WE__0010___________CAL_ATS_________________P01.xml'
 # ats_csv_file = './tests/WE__0010___________CAL_ATS_________________P01.csv'
+# pressure_csv_file = './tests/WE__0001___________DER_PS__________________P02.csv'
+# wind_csv_file = './tests/WE__0190___________DER_WS__________________P02.csv'
 # plot_Perseverance_ATS_data(ats_csv_file, which_ATS =3, save="tEsting", time_field='LMST')
 # plot_Perseverance_ATS_data(ats_csv_file, save_file=True)
+# data = read_Perseverance_ATS_data(ats_csv_file, 'all', time_field='LTST',sol=None, start=10,end=20)
+# data = read_Perseverance_PS_data(pressure_csv_file, sol=None, time_field='LTST',start=10,end=20)
+# data = read_Perseverance_WS_data(wind_csv_file, sol=None, time_field='LTST', wind_field='HORIZONTAL_WIND_SPEED',start=2,end=3)
+
+# print(data)
