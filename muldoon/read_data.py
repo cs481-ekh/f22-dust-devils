@@ -429,7 +429,7 @@ def plot_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST', save_fi
         end(int, optional): end index
 
     Returns:
-        time, temperarture plot (float array): times and temperature, times in hours
+        time, temperature plot (float array): times and temperature, times in hours
         since midnight of sol associated with filename
 
     """
@@ -448,6 +448,35 @@ def plot_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST', save_fi
         save_file = 'Figure 1'
         plt.savefig(save_file)
     elif(type(save_file) == str):
+        plt.savefig(save_file)
+
+    plt.show()
+
+def plot_Perseverance_Pressure_Data(filename, sol=None, time_field = 'LTST', start=0, end=0, scatter=False, save_file=False):
+    # ATS stuff?
+    # Worry about SCLK (doubtful)?
+    # Color code by transducer?
+    # LMST vs LTST??
+
+    # Rip directly?
+    time, pressure = read_Perseverance_PS_data(filename, sol, time_field, start = start, end = end)
+
+    # Equivalent of ATS and ATS handling/what to do with?
+    # Then just label and process?
+    plt.title("Pressure Levels V Time")
+    plt.xlabel("Time")
+    plt.ylabel("Pressure")
+    
+    if (scatter):
+        plt.scatter(time, pressure)
+    else:
+        plt.plot(time, pressure)
+
+    # Ensure rendering
+    if (save_file == True):
+        save_file = 'Pressure Fig 1'
+        plt.savefig(save_file)
+    elif (type(save_file) == str):
         plt.savefig(save_file)
 
     plt.show()
