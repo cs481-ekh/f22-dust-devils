@@ -429,7 +429,7 @@ def plot_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST', save_fi
         end(int, optional): end index
 
     Returns:
-        time, temperarture plot (float array): times and temperature, times in hours
+        time, temperature plot (float array): times and temperature, times in hours
         since midnight of sol associated with filename
 
     """
@@ -451,3 +451,15 @@ def plot_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST', save_fi
         plt.savefig(save_file)
 
     plt.show()
+
+def plot_Perseverance_Pressure_Data(filename, time_field = 'LTST', start=0, end=0):
+    # ATS stuff?
+    # Worry about SCLK (doubtful)?
+    # Color code by transducer?
+    # LMST vs LTST??
+
+    # Rip directly?
+    time, levels = read_Perseverance_PS_data(filename, None, time_field, start = start, end = end)
+
+    # Equivalent of ATS and ATS handling/what to do with?
+    # Then just label and process?
