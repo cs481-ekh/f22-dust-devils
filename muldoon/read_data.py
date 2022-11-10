@@ -26,7 +26,7 @@ def read_Perseverance_PS_data(filename, sol=None, time_field='LTST',start=0,end=
     check_file_type('PS', filename)
     time_field = check_time_field(time_field)
     FIELD = 'PRESSURE'
-    time, data= make_seconds_since_midnight(filename, time_field=time_field)
+    time, data= make_seconds_since_midnight(filename, time_field=time_field, sol=sol)
     # data, dummy = read_data(filename)
     pressure = []
 
@@ -61,7 +61,7 @@ def read_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST',sol=None
     time_field=check_time_field(time_field)
     
     # Note: ATS measures at 2 Hz, so there will be some duplicate LTST-values!
-    time, data = make_seconds_since_midnight(filename, time_field=time_field)
+    time, data = make_seconds_since_midnight(filename, time_field=time_field, sol=sol)
 
     if which_ATS == 'ALL':
         if filename.endswith('.xml'):
@@ -118,7 +118,7 @@ def read_Perseverance_WS_data(filename, sol=None, time_field='LTST', wind_field=
     check_file_type('WS', filename)
     wind_field = check_wind_field(wind_field)
     time_field = check_time_field(time_field)
-    time, data= make_seconds_since_midnight(filename, time_field=time_field)
+    time, data= make_seconds_since_midnight(filename, time_field=time_field, sol=sol)
 
     if(filename.endswith('.xml')):
         wind_data_col = data['TABLE'][wind_field]
@@ -148,7 +148,8 @@ def make_seconds_since_midnight(filename, time_field='LTST', sol=None):
 
     if(sol is None):
         primary_sol = which_sol(filename)
-
+    else:
+        primary_sol = sol
     data, _ = read_data(filename)
     time_field = check_time_field(time_field)
 
@@ -419,13 +420,20 @@ def plot_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST', save_fi
     Read in Perseverance MEDA ATS data - https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/
 
     Args:
-        filename (str): path to CSV file/PDS4 file
-        which_ATS (int or str): which of the five ATS sensors to read in;
+        filename (str): Path to CSV file/PDS4 file (HTTP addres also valid)
+
+        which_ATS (int or str): Which of the five ATS sensors to read in;
         if "all", all of the ATS time series are returned
-        time_field (str, optional): which time base to use
-        save_file: figure file name - defaults to 'Figure 1' unless specified
-        scatter: produces a scatter plot if True, else produces line plot
+
+        time_field (str, optional): Which time base to use (LTST/LMST; defaults to LTST)
+
+        save_file (bool/str, optional): If True, saves a local copy as a default name, if specified string, saves local
+        copy under that filename; will save in working directory
+
+        scatter: Produces a scatter plot if True, else produces line plot
+
         start(int, optional): start index
+
         end(int, optional): end index
 
     Returns:
@@ -453,12 +461,29 @@ def plot_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST', save_fi
     plt.show()
 
 def plot_Perseverance_Pressure_Data(filename, sol=None, time_field = 'LTST', start=0, end=0, scatter=False, save_file=False):
-    # ATS stuff?
-    # Worry about SCLK (doubtful)?
-    # Color code by transducer?
-    # LMST vs LTST??
+    """
 
-    # Rip directly?
+    Args:
+        filename (str): Path to CSV file/PDS4 file (HTTP address also valid)
+
+        sol (int, optional): Which sol to use; will determine from file if not specified
+
+        time_field (str, optional): Which time base to use (LTST/LMST; defaults to LTST)
+
+        start(int, optional): Start index
+
+        end(int, optional): End index
+
+        scatter (bool, optional): Produces a scatter plot if True, else produces line plot
+
+        save_file (bool/str, optional): If True, saves a local copy as a default name, if specified string, saves local
+        copy under that filename; will save in working directory
+
+    Returns:
+        time, pressure plot: Times and pressure, time is in hours
+        since midnight of sol associated with filename
+
+    """
     time, pressure = read_Perseverance_PS_data(filename, sol, time_field, start = start, end = end)
 
     # Equivalent of ATS and ATS handling/what to do with?
