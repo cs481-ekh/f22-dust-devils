@@ -3,7 +3,7 @@ from scipy.stats import median_abs_deviation as mad
 from muldoon.met_timeseries import *
 from muldoon.met_timeseries import PressureTimeseries
 from muldoon.met_timeseries import TemperatureTimeseries
-from muldoon.utils import break_at_gaps, modified_lorentzian, fit_vortex, write_out_plot_data
+from muldoon.utils import *
 from muldoon.read_data import *
 import numpy as np
 import matplotlib.pyplot as plt
@@ -132,3 +132,14 @@ def create_ATS_PS_Graph(PSurl,ATSurl):
     fig.savefig(buf,format='png')
     buf.seek(0)
     return StreamingResponse(buf)
+
+def create_WS_Graph(WSurl):
+    fig = create_fig()
+    ax = fig.add_subplot(111)
+    time, hor_wind_speed = read_Perseverance_WS_data(WSurl)
+    ax.scatter(time,hor_wind_speed)
+    buf = BytesIO()
+    fig.savefig(buf,format='png')
+    buf.seek(0)
+    return StreamingResponse(buf)    
+ 
