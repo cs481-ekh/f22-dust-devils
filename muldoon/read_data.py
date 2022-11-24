@@ -438,19 +438,13 @@ def plot_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST', save_fi
 
     Args:
         filename (str): Path to CSV file/PDS4 file (HTTP addres also valid)
-
         which_ATS (int or str): Which of the five ATS sensors to read in;
         if "all", all of the ATS time series are returned
-
         time_field (str, optional): Which time base to use (LTST/LMST; defaults to LTST)
-
         save_file (bool/str, optional): If True, saves a local copy as a default name, if specified string, saves local
         copy under that filename; will save in working directory
-
         scatter: Produces a scatter plot if True, else produces line plot
-
         start(int, optional): start index
-
         end(int, optional): end index
 
     Returns:
@@ -463,36 +457,30 @@ def plot_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST', save_fi
     plt.title(which_ATS + " vs TIME")
     plt.ylabel(which_ATS)
 
-    plt.xlabel(time_field + " time")
+    plt.xlabel(time_field + " TIME")
     if(scatter==True):
         plt.scatter(time,result)
     else:
         plt.plot(time,result)
 
     if(save_file == True):
-        save_file = 'Figure 1'
+        save_file = 'ATS Figure 1'
         plt.savefig(save_file)
     elif(type(save_file) == str):
         plt.savefig(save_file)
 
     plt.show()
 
-def plot_Perseverance_Pressure_Data(filename, sol=None, time_field = 'LTST', start=0, end=0, scatter=False, save_file=False):
+def plot_Perseverance_Pressure_data(filename, sol=None, time_field = 'LTST', start=0, end=0, scatter=False, save_file=False):
     """
 
     Args:
         filename (str): Path to CSV file/PDS4 file (HTTP address also valid)
-
         sol (int, optional): Which sol to use; will determine from file if not specified
-
         time_field (str, optional): Which time base to use (LTST/LMST; defaults to LTST)
-
         start(int, optional): Start index
-
         end(int, optional): End index
-
         scatter (bool, optional): Produces a scatter plot if True, else produces line plot
-
         save_file (bool/str, optional): If True, saves a local copy as a default name, if specified string, saves local
         copy under that filename; will save in working directory
 
@@ -505,9 +493,9 @@ def plot_Perseverance_Pressure_Data(filename, sol=None, time_field = 'LTST', sta
 
     # Equivalent of ATS and ATS handling/what to do with?
     # Then just label and process?
-    plt.title("Pressure Levels V Time")
-    plt.xlabel("Time")
-    plt.ylabel("Pressure")
+    plt.title("PRESSURE versus TIME")
+    plt.xlabel("TIME")
+    plt.ylabel("PRESSURE")
     
     if (scatter):
         plt.scatter(time, pressure)
@@ -516,29 +504,49 @@ def plot_Perseverance_Pressure_Data(filename, sol=None, time_field = 'LTST', sta
 
     # Ensure rendering
     if (save_file == True):
-        save_file = 'Pressure Fig 1'
+        save_file = 'Pressure Figure 1'
         plt.savefig(save_file)
     elif (type(save_file) == str):
         plt.savefig(save_file)
 
     plt.show()
 
+def plot_Perseverance_WS_data(filename, sol=None, time_field='LTST', wind_field='HORIZONTAL_WIND_SPEED',start=0,end=0, scatter=False, save_file=False):
+    """
 
-# filename = 'https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0000_0089/sol_0001/WE__0001___________DER_PS__________________P02.xml' #remote
-# pressure_pds4_file = './tests/WE__0001___________DER_PS__________________P02.xml' #local
-# filename = './tests/WE__0001___________DER_PS__________________P02.csv'
-# filename = 'https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0180_0299/sol_0190/WE__0190___________DER_WS__________________P02.xml' #remote
-# wind_pds4_file = 'WE__0190___________DER_WS__________________P02.xml' #local
-# filename = './tests/WE__0190___________DER_WS__________________P02.csv'
-# filename = './tests/WE__0010___________CAL_ATS_________________P01.csv'
-# filename = 'https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_calibrated_env/sol_0000_0089/sol_0010/WE__0010___________CAL_ATS_________________P01.xml'
+    Args:
+        filename (str): Path to CSV file/PDS4 file (HTTP address also valid)
+        sol (int, optional): Which sol to use; will determine from file if not specified
+        time_field (str, optional): Which time base to use (LTST/LMST; defaults to LTST)
+        start(int, optional): Start index
+        end(int, optional): End index
+        scatter (bool, optional): Produces a scatter plot if True, else produces line plot
+        save_file (bool/str, optional): If True, saves a local copy as a default name, if specified string, saves local
+        copy under that filename; will save in working directory
 
+    Returns:
+        time, wind plot: Times and wind, time is in hours
+        since midnight of sol associated with filename
 
+    """
+    time, wind = read_Perseverance_WS_data(filename=filename, sol=sol, time_field=time_field, wind_field=wind_field, start=start, end=end)
 
-# time = make_seconds_since_midnight(filename, time_field='LMST', sol=None)
+    # Equivalent of ATS and ATS handling/what to do with?
+    # Then just label and process?
+    plt.title(wind_field +" versus TIME")
+    plt.xlabel("TIME")
+    plt.ylabel(wind_field)
+    
+    if (scatter):
+        plt.scatter(time, wind)
+    else:
+        plt.plot(time, wind)
 
-# plot_Perseverance_ATS_data(filename, which_ATS=2, save_file = True)
+    # Ensure rendering
+    if (save_file == True):
+        save_file = 'Wind Figure 1'
+        plt.savefig(save_file)
+    elif (type(save_file) == str):
+        plt.savefig(save_file)
 
-# print(time)
-# print(time, temperature)
-
+    plt.show()
