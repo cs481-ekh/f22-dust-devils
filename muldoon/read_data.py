@@ -531,8 +531,6 @@ def plot_Perseverance_WS_data(filename, sol=None, time_field='LTST', wind_field=
     """
     time, wind = read_Perseverance_WS_data(filename=filename, sol=sol, time_field=time_field, wind_field=wind_field, start=start, end=end)
 
-    # Equivalent of ATS and ATS handling/what to do with?
-    # Then just label and process?
     plt.title(wind_field +" versus TIME")
     plt.xlabel("TIME")
     plt.ylabel(wind_field)
