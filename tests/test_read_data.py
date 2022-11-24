@@ -53,15 +53,17 @@ def test_time_to_hours_decimal_lmst():
     result = time_to_hours_decimal(times_str, delta_sols,time_field)
     assert(round(result[0], 8) == expected[0])
 
-def test_make_seconds_since_midnight_ltst():
-    result,_ = make_seconds_since_midnight(pressure_pds4_file,'ltst', None)
-    expected = [15.46694444]
-    assert(round(result[0], 8) == expected[0])
+# Test not needed, since process data is now a private function
+# def test_process_data_ltst():
+#     result,_ = process_data(pressure_pds4_file,'ltst', None)
+#     expected = [15.46694444]
+#     assert(round(result[0], 8) == expected[0])
 
-def test_make_seconds_since_midnight_lmst():
-    result,_ = make_seconds_since_midnight(pressure_csv_file,'lmst', None)
-    expected = [16.09203194]
-    assert(round(result[0], 8) == expected[0])
+# Test not needed, since process data is now a private function
+# def test_process_data_lmst():
+#     result,_ = process_data(pressure_csv_file,'lmst', None)
+#     expected = [16.09203194]
+#     assert(round(result[0], 8) == expected[0])
 
 def test_read_Perseverance_PS_data_csv():
     _,result = read_Perseverance_PS_data(pressure_csv_file, None, 'LTST')

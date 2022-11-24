@@ -26,8 +26,8 @@ def read_Perseverance_PS_data(filename, sol=None, time_field='LTST',start=0,end=
     check_file_type('PS', filename)
     time_field = check_time_field(time_field)
     FIELD = 'PRESSURE'
-    time, data= make_seconds_since_midnight(filename, time_field=time_field, sol=sol)
-    # data, dummy = read_data(filename)
+    time, data= __process_data(filename, time_field=time_field, sol=sol)
+    
     pressure = []
 
     if filename.endswith('.xml'):
@@ -61,7 +61,7 @@ def read_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST',sol=None
     time_field=check_time_field(time_field)
     
     # Note: ATS measures at 2 Hz, so there will be some duplicate LTST-values!
-    time, data = make_seconds_since_midnight(filename, time_field=time_field, sol=sol)
+    time, data = __process_data(filename, time_field=time_field, sol=sol)
 
     if which_ATS == 'ALL':
         if filename.endswith('.xml'):
@@ -116,9 +116,9 @@ def read_Perseverance_WS_data(filename, sol=None, time_field='LTST', wind_field=
         since midnight of sol associated with filename
     """
     check_file_type('WS', filename)
-    wind_field = check_wind_field(wind_field)
+    wind_field = __check_wind_field(wind_field)
     time_field = check_time_field(time_field)
-    time, data= make_seconds_since_midnight(filename, time_field=time_field, sol=sol)
+    time, data= __process_data(filename, time_field=time_field, sol=sol)
 
     if(filename.endswith('.xml')):
         wind_data_col = data['TABLE'][wind_field]
@@ -132,6 +132,23 @@ def read_Perseverance_WS_data(filename, sol=None, time_field='LTST', wind_field=
     return time, wind_data
 
 def make_seconds_since_midnight(filename, time_field='LTST', sol=None):
+    """
+    The MEDA data provide times in the LTST field in the format "sol hour:minute:second".
+
+    Args:
+        filename (str): path to CSV file/PDS4 file
+        time_field (str, optional): name of time field to analyze
+        sol (int, optional): which is the primary sol; if not given, will
+        determine from filename
+
+    Returns:
+        time: number of seconds in each row since midnight of the primary sol for that file
+        data: processed data from file
+        """
+    time, _ = __process_data(filename, time_field,sol)
+    return time
+
+def __process_data(filename, time_field='LTST', sol=None):
     """
     The MEDA data provide times in the LTST field in the format "sol hour:minute:second".
 
@@ -313,7 +330,7 @@ def check_time_field(time_field:str):
         print('--------------------------')
         raise Exception("\n===>time_field= '" + time_field + "' is not an accepted time_field input")
 
-def check_wind_field(wind_field:str):
+def __check_wind_field(wind_field:str):
     """
     Checks if wind_field is a valid input and 
     updates wind_field to the right format
@@ -505,3 +522,23 @@ def plot_Perseverance_Pressure_Data(filename, sol=None, time_field = 'LTST', sta
         plt.savefig(save_file)
 
     plt.show()
+
+
+filename = 'https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0000_0089/sol_0001/WE__0001___________DER_PS__________________P02.xml' #remote
+# pressure_pds4_file = './tests/WE__0001___________DER_PS__________________P02.xml' #local
+# filename = './tests/WE__0001___________DER_PS__________________P02.csv'
+# filename = 'https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0180_0299/sol_0190/WE__0190___________DER_WS__________________P02.xml' #remote
+# wind_pds4_file = 'WE__0190___________DER_WS__________________P02.xml' #local
+# filename = './tests/WE__0190___________DER_WS__________________P02.csv'
+# filename = './tests/WE__0010___________CAL_ATS_________________P01.csv'
+# filename = 'https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_calibrated_env/sol_0000_0089/sol_0010/WE__0010___________CAL_ATS_________________P01.xml'
+
+
+
+time = make_seconds_since_midnight(filename, time_field='LMST', sol=None)
+
+# plot_Perseverance_ATS_data(filename, which_ATS=2, save_file = True)
+
+print(time)
+# print(time, temperature)
+
