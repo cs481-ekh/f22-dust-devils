@@ -23,8 +23,8 @@ def read_Perseverance_PS_data(filename, sol=None, time_field='LTST',start=0,end=
         time, pressure (float array): times and pressures, times in seconds
         since midnight of sol associated with filename
     """
-    check_file_type('PS', filename)
-    time_field = check_time_field(time_field)
+    __check_file_type('PS', filename)
+    time_field = __check_time_field(time_field)
     FIELD = 'PRESSURE'
     time, data= __process_data(filename, time_field=time_field, sol=sol)
     
@@ -35,8 +35,8 @@ def read_Perseverance_PS_data(filename, sol=None, time_field='LTST',start=0,end=
     elif filename.endswith('.csv'):
         pressure = data['PRESSURE'].values
 
-    pressure=array_slice(pressure,start,end)
-    time=array_slice(time,start,end)
+    pressure=__array_slice(pressure,start,end)
+    time=__array_slice(time,start,end)
 
     return time, pressure
 
@@ -56,9 +56,9 @@ def read_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST',sol=None
         since midnight of sol associated with filename
 
     """
-    check_file_type('ATS', filename)
-    which_ATS = check_ATS_field(which_ATS)
-    time_field=check_time_field(time_field)
+    __check_file_type('ATS', filename)
+    which_ATS = __check_ATS_field(which_ATS)
+    time_field=__check_time_field(time_field)
     
     # Note: ATS measures at 2 Hz, so there will be some duplicate LTST-values!
     time, data = __process_data(filename, time_field=time_field, sol=sol)
@@ -77,12 +77,12 @@ def read_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST',sol=None
             ATS4 = pd.read_csv(filename)["ATS_LOCAL_TEMP4"].values
             ATS5 = pd.read_csv(filename)["ATS_LOCAL_TEMP5"].values
 
-        ATS1 = array_slice(ATS1,start,end)
-        ATS2 = array_slice(ATS2,start,end)
-        ATS3 = array_slice(ATS3,start,end)
-        ATS4 = array_slice(ATS4,start,end)
-        ATS5 = array_slice(ATS5,start,end)
-        time=array_slice(time,start,end)
+        ATS1 = __array_slice(ATS1,start,end)
+        ATS2 = __array_slice(ATS2,start,end)
+        ATS3 = __array_slice(ATS3,start,end)
+        ATS4 = __array_slice(ATS4,start,end)
+        ATS5 = __array_slice(ATS5,start,end)
+        time=__array_slice(time,start,end)
 
         return time, [ATS1, ATS2, ATS3, ATS4, ATS5]
 
@@ -92,8 +92,8 @@ def read_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST',sol=None
         else: 
             temperature = data[which_ATS].values;
 
-    temperature = array_slice(temperature,start,end)
-    time=array_slice(time,start,end)
+    temperature = __array_slice(temperature,start,end)
+    time=__array_slice(time,start,end)
     
     return time, temperature
 
@@ -115,9 +115,9 @@ def read_Perseverance_WS_data(filename, sol=None, time_field='LTST', wind_field=
         time, ws1-8 (float array): times and dimensions of wind speed, times in seconds
         since midnight of sol associated with filename
     """
-    check_file_type('WS', filename)
+    __check_file_type('WS', filename)
     wind_field = __check_wind_field(wind_field)
-    time_field = check_time_field(time_field)
+    time_field = __check_time_field(time_field)
     time, data= __process_data(filename, time_field=time_field, sol=sol)
 
     if(filename.endswith('.xml')):
@@ -127,8 +127,8 @@ def read_Perseverance_WS_data(filename, sol=None, time_field='LTST', wind_field=
     elif(filename.endswith('.csv')):
         wind_data = data[wind_field].values
 
-    wind_data=array_slice(wind_data,start,end)
-    time=array_slice(time,start,end)
+    wind_data=__array_slice(wind_data,start,end)
+    time=__array_slice(time,start,end)
     return time, wind_data
 
 def make_seconds_since_midnight(filename, time_field='LTST', sol=None):
@@ -148,6 +148,9 @@ def make_seconds_since_midnight(filename, time_field='LTST', sol=None):
     time, _ = __process_data(filename, time_field,sol)
     return time
 
+#################################
+#        Helper Function        #
+#################################
 def __process_data(filename, time_field='LTST', sol=None):
     """
     The MEDA data provide times in the LTST field in the format "sol hour:minute:second".
@@ -164,11 +167,11 @@ def __process_data(filename, time_field='LTST', sol=None):
         """
 
     if(sol is None):
-        primary_sol = which_sol(filename)
+        primary_sol = __which_sol(filename)
     else:
         primary_sol = sol
-    data, _ = read_data(filename)
-    time_field = check_time_field(time_field)
+    data, _ = __read_data(filename)
+    time_field = __check_time_field(time_field)
 
     sols_str = [] #Sol is a solar day on Mars
     times_str = []
@@ -204,11 +207,11 @@ def __process_data(filename, time_field='LTST', sol=None):
         elif(filename.endswith('.csv')):
             times_str = data[time_field].str.split("M", expand=True)[1].values
 
-    time = time_to_hours_decimal(times_str, delta_sols, time_field)
+    time = __time_to_hours_decimal(times_str, delta_sols, time_field)
 
     return time, data
 
-def time_to_hours_decimal(times_str, delta_sols,time_field):
+def __time_to_hours_decimal(times_str, delta_sols,time_field):
     """
     Time coversion for easy usability
 
@@ -219,7 +222,7 @@ def time_to_hours_decimal(times_str, delta_sols,time_field):
     Returns:
         converted time
     """
-    time_field = check_time_field(time_field)
+    time_field = __check_time_field(time_field)
     if(time_field=='LTST'):
         time = np.array([float(times_str[i].split(":")[0]) +\
                 delta_sols[i]*24. + float(times_str[i].split(":")[1])/60 +\
@@ -234,7 +237,7 @@ def time_to_hours_decimal(times_str, delta_sols,time_field):
 
     return time
 
-def which_sol(filename):
+def __which_sol(filename):
     """
     Based on the filename, returns the sol corresponding to a data file
 
@@ -249,10 +252,7 @@ def which_sol(filename):
 
     return int(filename[ind+4:ind+8])
 
-#################################
-#        Helper Function        #
-#################################
-def read_data(filename:str):
+def __read_data(filename:str):
     """
     Verifies the existence of provide file
 
@@ -287,9 +287,9 @@ def read_data(filename:str):
      
     return data, file_status
 
-def check_file_type(data_requested:str, filename:str):
+def __check_file_type(data_requested:str, filename:str):
     """
-    Checks if requested data is found in the
+    Private function - Checks if requested data is found in the
     input file
 
     Args:
@@ -307,7 +307,7 @@ def check_file_type(data_requested:str, filename:str):
         raise Exception(error_message)
 
 
-def check_time_field(time_field:str):
+def __check_time_field(time_field:str):
     """
     Checks if time_field is a valid input
     updates wind_field to the right format
@@ -366,7 +366,7 @@ def __check_wind_field(wind_field:str):
         print('----------------------------------------')
         raise Exception("wind_field= '" + wind_field + "' is not an accepted wind_field input")
     
-def check_ATS_field(ats_field):
+def __check_ATS_field(ats_field):
     """
     Checks if wind_field is a valid input and 
     updates wind_field to the right format
@@ -403,7 +403,7 @@ def check_ATS_field(ats_field):
         print('----------------------------')
         raise Exception("\n===>ats_field= '" + str(ats_field) + "' is not an accepted ats_field input")
     
-def array_slice(data, start=0, end=0):
+def __array_slice(data, start=0, end=0):
     """
     Array slicing option - helps take elements from one 
     given index to another given index.
@@ -459,7 +459,7 @@ def plot_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST', save_fi
 
     """
     time,result = read_Perseverance_ATS_data(filename,which_ATS,time_field,None,start=start,end=end)
-    which_ATS = check_ATS_field(which_ATS)
+    which_ATS = __check_ATS_field(which_ATS)
     plt.title(which_ATS + " vs TIME")
     plt.ylabel(which_ATS)
 
