@@ -63,7 +63,7 @@ def redchisqg(ydata,ymod,deg=2,sd=None):
     return chisq/nu
 
 
-def fit_vortex_ps(vortex, init_params, bounds, sigma=None, 
+def fit_vortex(vortex, init_params, bounds, sigma=None, 
         rescale_uncertainties=True):
     """
     Fits modified Lorentzian to pressure/temperature profile
@@ -166,7 +166,7 @@ def find_gaps(time):
     ind = delta_ts > 0.
 
     # Are there any delta t's bigger than the typical sampling?
-    mod = mode(delta_ts[ind])[0][0]
+    mod = mode(delta_ts[ind], keepdims=True)[0][0]
 
     # If there are no gaps in the time-series
     ind = np.argwhere(~np.isclose(delta_ts, mod, rtol=0., atol=mod))[:,0]
