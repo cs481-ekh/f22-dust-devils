@@ -27,7 +27,7 @@ class MetTimeseries(object):
 
         self.time = time
         # Calculate the sampling rate
-        self.sampling = mode(time[1:] - time[0:-1]).mode[0]
+        self.sampling = mode(time[1:] - time[0:-1], keepdims=True).mode[0]
 
         self.data = data
 
@@ -348,7 +348,7 @@ class PressureTimeseries(MetTimeseries):
             bounds = self._determine_bounds(self.vortices[i], init_params)
 
             try:
-                popt, unc = utils.fit_vortex_ps(self.vortices[i], init_params, 
+                popt, unc = utils.fit_vortex(self.vortices[i], init_params, 
                         bounds, sigma=self.vortices[i]["scatter"])
 
                 self.popts.append(popt)

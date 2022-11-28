@@ -131,7 +131,7 @@ def read_Perseverance_WS_data(filename, sol=None, time_field='LTST', wind_field=
     time=__array_slice(time,start,end)
     return time, wind_data
 
-def make_seconds_since_midnight(filename, time_field='LTST', sol=None):
+def make_seconds_since_midnight(filename, time_field='LTST', sol=None, start=0, end=0):
     """
     The MEDA data provide times in the LTST field in the format "sol hour:minute:second".
 
@@ -146,6 +146,7 @@ def make_seconds_since_midnight(filename, time_field='LTST', sol=None):
         data: processed data from file
         """
     time, _ = __process_data(filename, time_field,sol)
+    time=__array_slice(time,start,end)
     return time
 
 #################################
@@ -270,7 +271,7 @@ def __read_data(filename:str):
     if filename.endswith('.xml'):
         try:
             data = pds4_read(filename,lazy_load=True)
-            data.info()
+            # data.info()
             file_status = 1
         except Exception as e:
             print(error_message)
@@ -283,13 +284,13 @@ def __read_data(filename:str):
         except Exception as e:
             print(error_message)
             file_status = 0
-    print('===========================================================================')
+    print('===================================================================')
      
     return data, file_status
 
 def __check_file_type(data_requested:str, filename:str):
     """
-    Private function - Checks if requested data is found in the
+    Checks if requested data is found in the
     input file
 
     Args:
@@ -468,7 +469,6 @@ def plot_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST', save_fi
         plt.savefig(save_file)
     elif(type(save_file) == str):
         plt.savefig(save_file)
-
     plt.show()
 
 def plot_Perseverance_Pressure_data(filename, sol=None, time_field = 'LTST', start=0, end=0, scatter=False, save_file=False):
