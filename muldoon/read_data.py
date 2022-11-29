@@ -119,7 +119,7 @@ def read_Perseverance_WS_data(filename, sol=None, time_field='LTST', wind_field=
     wind_field = __check_wind_field(wind_field)
     time_field = __check_time_field(time_field)
     time, data= __process_data(filename, time_field=time_field, sol=sol)
-    wind_data = []
+    # wind_data = []
 
     if(filename.endswith('.xml')):
         wind_data_col = data['TABLE'][wind_field]
