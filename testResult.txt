@@ -1,0 +1,53 @@
+============================= test session starts ==============================
+platform linux -- Python 3.8.10, pytest-7.1.3, pluggy-1.0.0 -- /usr/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/raynor/School/481 Senior Design/OurGit/f22-dust-devils
+collecting ... collected 18 items
+
+tests/test_muldoon.py::test_detrend_timeseries_boxcar PASSED             [  5%]
+tests/test_muldoon.py::test_apply_lorentzian_matched_filter PASSED       [ 11%]
+tests/test_muldoon.py::test_find_vortices PASSED                         [ 16%]
+tests/test_muldoon.py::test_fit_vortex PASSED                            [ 22%]
+tests/test_muldoon.py::test_init_params_bounds PASSED                    [ 27%]
+tests/test_muldoon.py::test_fit_all_vortices PASSED                      [ 33%]
+tests/test_muldoon.py::test_retrieve_vortices PASSED                     [ 38%]
+tests/test_read_data.py::test_file_verification_pds4_file_exist PASSED   [ 44%]
+tests/test_read_data.py::test_file_verification_pds4_file_does_not_exist PASSED [ 50%]
+tests/test_read_data.py::test_file_verification_csv_file_exist PASSED    [ 55%]
+tests/test_read_data.py::test_file_verification_csv_file_does_not_exist PASSED [ 61%]
+tests/test_read_data.py::test_time_conversion_to_seconds_ltst PASSED     [ 66%]
+tests/test_read_data.py::test_time_conversion_to_seconds_lmst PASSED     [ 72%]
+tests/test_read_data.py::test_make_seconds_since_midnight_ltst PASSED    [ 77%]
+tests/test_read_data.py::test_make_seconds_since_midnight_lmst PASSED    [ 83%]
+tests/test_read_data.py::test_read_Perseverance_PS_data_PDS4 FAILED      [ 88%]
+tests/test_utils.py::test_vortex_wind PASSED                             [ 94%]
+tests/test_utils.py::test_wind_profile PASSED                            [100%]
+
+=================================== FAILURES ===================================
+_____________________ test_read_Perseverance_PS_data_PDS4 ______________________
+
+    def test_read_Perseverance_PS_data_PDS4():
+        filename = './tests/WE__0001___________DER_PS__________________P02.csv'
+        result = read_Perseverance_PS_data(filename, None, 'LTST')
+        expected = [715.96]
+>       assert(round(result[0], 2) == expected[0])
+E       TypeError: type numpy.ndarray doesn't define __round__ method
+
+tests/test_read_data.py:69: TypeError
+----------------------------- Captured stdout call -----------------------------
+Processing file: ./tests/WE__0001___________DER_PS__________________P02.csv
+Processing file: ./tests/WE__0001___________DER_PS__________________P02.csv
+=============================== warnings summary ===============================
+muldoon/met_timeseries.py:29
+tests/test_muldoon.py::test_retrieve_vortices
+  /home/raynor/School/481 Senior Design/OurGit/f22-dust-devils/muldoon/met_timeseries.py:29: FutureWarning: Unlike other reduction functions (e.g. `skew`, `kurtosis`), the default behavior of `mode` typically preserves the axis it acts along. In SciPy 1.11.0, this behavior will change: the default value of `keepdims` will become False, the `axis` over which the statistic is taken will be eliminated, and the value None will no longer be accepted. Set `keepdims` to True or False to avoid this warning.
+    self.sampling = mode(time[1:] - time[0:-1]).mode[0]
+
+muldoon/utils.py:167
+  /home/raynor/School/481 Senior Design/OurGit/f22-dust-devils/muldoon/utils.py:167: FutureWarning: Unlike other reduction functions (e.g. `skew`, `kurtosis`), the default behavior of `mode` typically preserves the axis it acts along. In SciPy 1.11.0, this behavior will change: the default value of `keepdims` will become False, the `axis` over which the statistic is taken will be eliminated, and the value None will no longer be accepted. Set `keepdims` to True or False to avoid this warning.
+    mod = mode(delta_ts[ind])[0][0]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_read_data.py::test_read_Perseverance_PS_data_PDS4 - TypeErr...
+=================== 1 failed, 17 passed, 3 warnings in 5.25s ===================
