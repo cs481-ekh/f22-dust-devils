@@ -483,7 +483,7 @@ def plot_Perseverance_ATS_data(filename, which_ATS=1, time_field='LTST', save_fi
         plt.savefig(save_file)
     plt.show()
 
-def plot_Perseverance_Pressure_data(filename, sol=None, time_field = 'LTST', start=0, end=0, scatter=False, save_file=False):
+def plot_Perseverance_PS_data(filename, sol=None, time_field = 'LTST', start=0, end=0, scatter=False, save_file=False):
     """
 
     Args:
