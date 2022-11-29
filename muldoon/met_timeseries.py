@@ -348,7 +348,7 @@ class PressureTimeseries(MetTimeseries):
             bounds = self._determine_bounds(self.vortices[i], init_params)
 
             try:
-                popt, unc = utils.fit_vortex_ps(self.vortices[i], init_params, 
+                popt, unc = utils.fit_vortex(self.vortices[i], init_params, 
                         bounds, sigma=self.vortices[i]["scatter"])
 
                 self.popts.append(popt)
