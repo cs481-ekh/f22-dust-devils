@@ -126,8 +126,20 @@ def read_Perseverance_WS_data(filename, sol=None, time_field='LTST', wind_field=
 
     elif(filename.endswith('.csv')):
         wind_data = data[wind_field].values
+            
 
     wind_data=__array_slice(wind_data,start,end)
+
+    # Limits plots to only values less than 1000
+    wind_array = []
+    
+    for d in wind_data:
+        if d >= 1000:
+            d = 0
+        wind_array.append(d)
+    
+    wind_data = np.array(wind_array)
+
     time=__array_slice(time,start,end)
     return time, wind_data
 
