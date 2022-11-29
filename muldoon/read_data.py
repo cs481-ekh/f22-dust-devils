@@ -119,6 +119,7 @@ def read_Perseverance_WS_data(filename, sol=None, time_field='LTST', wind_field=
     wind_field = __check_wind_field(wind_field)
     time_field = __check_time_field(time_field)
     time, data= __process_data(filename, time_field=time_field, sol=sol)
+    wind_data = []
 
     if(filename.endswith('.xml')):
         wind_data_col = data['TABLE'][wind_field]
@@ -126,8 +127,20 @@ def read_Perseverance_WS_data(filename, sol=None, time_field='LTST', wind_field=
 
     elif(filename.endswith('.csv')):
         wind_data = data[wind_field].values
+            
 
     wind_data=__array_slice(wind_data,start,end)
+
+    # Limits plots to only values less than 1000
+    wind_array = []
+    for d in wind_data:
+        if(d > 1000):
+            d = 0
+            wind_array.append(d)
+        elif(d <= 1000):
+            wind_array.append(d)
+        wind_data = np.array(wind_array)
+
     time=__array_slice(time,start,end)
     return time, wind_data
 
