@@ -32,7 +32,7 @@ def read_Perseverance_PS_data(filename, sol=None, time_field='LTST',start=0,end=
 
     if filename.endswith('.xml'):
         pressure = data['TABLE'][FIELD]
-    elif filename.endswith('.csv'):
+    else:
         pressure = data['PRESSURE'].values
 
     pressure=__array_slice(pressure,start,end)
@@ -124,7 +124,7 @@ def read_Perseverance_WS_data(filename, sol=None, time_field='LTST', wind_field=
         wind_data_col = data['TABLE'][wind_field]
         wind_data = np.array(wind_data_col)
 
-    elif(filename.endswith('.csv')):
+    else:
         wind_data = data[wind_field].values
             
 
@@ -204,7 +204,7 @@ def __process_data(filename, time_field='LTST', sol=None):
             
             for x in range(len(ltst_values)):
                 delta_sols.append(sols_str[x] - float(primary_sol))
-        elif(filename.endswith('.csv')):
+        else:
             sols_str = data[time_field].str.split(expand=True)[0].values #splits from char 0 to space " "
             times_str = data[time_field].str.split(expand=True)[1].values
             delta_sols = sols_str.astype(float) - float(primary_sol)
@@ -217,7 +217,7 @@ def __process_data(filename, time_field='LTST', sol=None):
             
             for x in range(len(lmst_values)):
                 times_str.append(lmst_split[x][1])
-        elif(filename.endswith('.csv')):
+        else:
             times_str = data[time_field].str.split("M", expand=True)[1].values
 
     time = __time_to_hours_decimal(times_str, delta_sols, time_field)
