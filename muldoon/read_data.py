@@ -134,7 +134,7 @@ def read_Perseverance_WS_data(filename, sol=None, time_field='LTST', wind_field=
     # Limits plots to only values less than 1000
     wind_array = []
     for d in wind_data:
-        if(d > 1000):
+        if d > 1000:
             d = 0
             wind_array.append(d)
         elif(d <= 1000):
