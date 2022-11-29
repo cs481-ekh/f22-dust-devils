@@ -1,11 +1,13 @@
 """
 Utility functions for muldoon
 """
-import numpy
 import numpy as np
 import math
 from scipy.optimize import curve_fit
 from scipy.stats import mode
+from muldoon.read_data import *
+
+
 
 def modified_lorentzian(t, baseline, slope, t0, Delta, Gamma):
     """
@@ -164,7 +166,7 @@ def find_gaps(time):
     ind = delta_ts > 0.
 
     # Are there any delta t's bigger than the typical sampling?
-    mod = mode(delta_ts[ind])[0][0]
+    mod = mode(delta_ts[ind], keepdims=True)[0][0]
 
     # If there are no gaps in the time-series
     ind = np.argwhere(~np.isclose(delta_ts, mod, rtol=0., atol=mod))[:,0]
@@ -273,9 +275,22 @@ def wind_vortex_profile(max_wind_speed, ambient_speed_before, b, time, t0, gamma
         vortex wind profile (float array): V(t)
 
     """
-    ret_t = time - t0
 
-    return float(max_wind_speed * (math.sqrt(1 + math.pow((ambient_speed_before/b), 2) * math.pow(ret_t, 2)) / (1 + math.pow(ret_t/(gamma/2), 2))))
+    return max_wind_speed * ((1 + ((ambient_speed_before/b)**2) * (time-t0)**2)**(1/2) / (1 + ((time-t0)/(gamma/2))**2))
+
+def get_vortex(result):
+    """
+    Creates the vortex dictionary for fit_vortex functions
+
+    Args:
+        result (float array):
+    
+    Returns:
+        vortex (dict of float arrays)
+    """
+    vortex_dict = dict({"time": result[0], "data": result[1]})
+    return vortex_dict
+
 
 def fit_vortex_ws(vortex, init_params, bounds, sigma=None, 
         rescale_uncertainties=True):
@@ -315,3 +330,5 @@ def fit_vortex_ws(vortex, init_params, bounds, sigma=None,
         pcov *= np.sqrt(red_chisq)
 
     return popt, np.sqrt(np.diag(pcov))
+
+
