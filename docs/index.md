@@ -17,4 +17,5 @@ The goal of project was adapting and upgrading a previously constructed python p
 ![img](https://github.com/cs481-ekh/f22-dust-devils/blob/main/docs/output.png)
 ![img](https://github.com/cs481-ekh/f22-dust-devils/blob/main/docs/output1.png)
 ![img](https://github.com/cs481-ekh/f22-dust-devils/blob/main/docs/output3.png)
+![img](https://github.com/cs481-ekh/f22-dust-devils/blob/main/docs/code_ex2.png)
 ![img](https://github.com/cs481-ekh/f22-dust-devils/blob/main/docs/output4.png)
