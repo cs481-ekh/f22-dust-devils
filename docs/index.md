@@ -13,6 +13,7 @@ To support the capability of quantifying Martian dust devils atmospheric influen
 The goal of project was adapting and upgrading a previously constructed python package, Muldoon designed to analyze martian meteorological data. Planned upgrades included reconfiguring python package to read PDS4 data, dust devil wind timeseries model, and improving the package documentation. A user of this Python package would most likely be well versed in this kind of research, so that would have to be kept in mind while viewing examples of the following material.
 
 ## Screen Shots:
+![img](https://github.com/cs481-ekh/f22-dust-devils/blob/main/docs/code_ex.png)
 ![img](https://github.com/cs481-ekh/f22-dust-devils/blob/main/docs/output.png)
 ![img](https://github.com/cs481-ekh/f22-dust-devils/blob/main/docs/output1.png)
 ![img](https://github.com/cs481-ekh/f22-dust-devils/blob/main/docs/output3.png)
