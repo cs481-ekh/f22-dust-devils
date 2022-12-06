@@ -18,9 +18,20 @@ The goal of project was adapting and upgrading a previously constructed Python p
 A user of this Python package would most likely be well versed in this kind of research, so that would have to be kept in mind while viewing examples of the following material; it is understood that as esoteric as meteorology already is, even before you factor in the literally-alien environment that is the target, it can be a little overwhelming to theh layperson.
 
 ## Screen Shots:
-![img](https://github.com/cs481-ekh/f22-dust-devils/blob/main/docs/code_ex.png)
-![img](https://github.com/cs481-ekh/f22-dust-devils/blob/main/docs/output.png)
-![img](https://github.com/cs481-ekh/f22-dust-devils/blob/main/docs/output1.png)
-![img](https://github.com/cs481-ekh/f22-dust-devils/blob/main/docs/output3.png)
-![img](https://github.com/cs481-ekh/f22-dust-devils/blob/main/docs/code_ex2.png)
-![img](https://github.com/cs481-ekh/f22-dust-devils/blob/main/docs/output4.png)
+![img](https://github.com/cs481-ekh/f22-dust-devils/blob/main/docs/code_ex.png)  
+- The simplest drivers of the program, which read data either from a remote repository or local file, process it, find appropriate labels and headers in the data for plotting, and create a plot, which is customizable depending on optional arguments supplied  
+
+![img](https://github.com/cs481-ekh/f22-dust-devils/blob/main/docs/output.png)  
+- A plot showing oscillations in wind speed  
+
+![img](https://github.com/cs481-ekh/f22-dust-devils/blob/main/docs/output1.png)  
+- Isolated pressure changes over time. Note the linear regression in the center, which is a giveaway for dust devil activity  
+
+![img](https://github.com/cs481-ekh/f22-dust-devils/blob/main/docs/output3.png)  
+- Isolated temperature oscilations over time. It is worth noting that these are graphs a researcher would make use of to analyze individual aspects of the dust devil, once you've already found one  
+
+![img](https://github.com/cs481-ekh/f22-dust-devils/blob/main/docs/code_ex2.png)  
+- An excerpt of the wind timeseries code, which specifically finds the metrics behind an individual dust devil's profile  
+
+![img](https://github.com/cs481-ekh/f22-dust-devils/blob/main/docs/output4.png)  
+- The plot created by the code above, which shows a graph representation of a dust devil passing over/through the Rover
