@@ -22,7 +22,7 @@ A user of this Python package would most likely be well versed in this kind of r
 - The simplest drivers of the program, which read data either from a remote repository or local file, process it, find appropriate labels and headers in the data for plotting, and create a plot, which is customizable depending on optional arguments supplied  
 
 ![img](https://github.com/cs481-ekh/f22-dust-devils/blob/main/docs/output.png)  
-- A plot showing oscillations in wind speed  
+- A plot showing oscillations in horizontal wind speed  
 
 ![img](https://github.com/cs481-ekh/f22-dust-devils/blob/main/docs/output1.png)  
 - Isolated pressure changes over time. Note the linear regression in the center, which is a giveaway for dust devil activity  
