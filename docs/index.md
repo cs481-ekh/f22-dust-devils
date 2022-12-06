@@ -15,7 +15,7 @@ The goal of project was adapting and upgrading a previously constructed Python p
 - Implementing a dust devil wind timeseries model  
 - Improving the package documentation  
 
-A user of this Python package would most likely be well versed in this kind of research, so that would have to be kept in mind while viewing examples of the following material; it is understood that as esoteric as meteorology already is, even before you factor in the literally-alien environment that is the target, it can be a little overwhelming to theh layperson.
+A user of this Python package would most likely be well versed in this kind of research, so that would have to be kept in mind while viewing examples of the following material; it is understood that as esoteric as meteorology already is, even before you factor in the literally-alien environment that is the target, it can be a little overwhelming to the layperson.
 
 ## Screen Shots:
 ![img](https://github.com/cs481-ekh/f22-dust-devils/blob/main/docs/code_ex.png)  
